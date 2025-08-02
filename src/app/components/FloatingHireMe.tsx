@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { motion, useAnimation, useMotionValue } from "framer-motion";
 
 interface CircularTextProps {
+    screenSize: string;
     text: string;
     spinDuration?: number;
     onHover?: "speedUp" | "slowDown" | "pause" | "goBonkers" | "";
@@ -27,6 +28,7 @@ const getTransition = (duration: number, from: number) => ({
 });
 
 const FloatingHireMe: React.FC<CircularTextProps> = ({
+    screenSize,
     text,
     spinDuration = 20,
     onHover = "speedUp",
@@ -92,7 +94,7 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
 
     return (
         <motion.div
-            className={`m-0 mx-auto rounded-full w-[200px] h-[200px] relative text-white font-black text-center cursor-pointer origin-center ${className}`}
+            className={`m-0 mx-auto rounded-full w-[150px] h-[150px] md:w-[200px] md:h-[200px] relative text-white font-black text-center cursor-pointer origin-center ${className}`}
             style={{ rotate: rotation }}
             initial={{ rotate: 0 }}
             animate={controls}
@@ -109,7 +111,7 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
                 return (
                     <span
                         key={i}
-                        className="absolute inline-block inset-0 text-2xl transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]"
+                        className={`absolute inline-block inset-0 ${screenSize == "big" ? "text-2xl" : "xl"} transition-all duration-500 ease-[cubic-bezier(0,0,0,1)]`}
                         style={{ transform, WebkitTransform: transform }}
                     >
                         {letter}
@@ -118,7 +120,7 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
             })}
             {/* ✅ Center Circle */}
             <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white hover:bg-gray-700 hover:text-white text-black font-bold text-lg rounded-full w-24 h-24 flex items-center justify-center shadow-lg">
+                <div className="bg-white hover:bg-gray-700 hover:text-white text-black font-bold text-lg rounded-full w-20 md:w-24 h-20  md:h-24 flex items-center justify-center shadow-lg">
                     Hire Me
                 </div>
             </div>
