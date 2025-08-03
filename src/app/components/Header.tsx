@@ -1,4 +1,4 @@
-import { FaGithub, FaLinkedin, FaInstagram, FaTimes, FaBars } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import MobileMenu from './MobileMenu';
 
 const Header = () => {
@@ -11,7 +11,7 @@ const Header = () => {
     return (
         <header className="flex items-center justify-between px-8 py-4 border-b border-gray-800 bg-gray-900">
             {/* Left Navigation */}
-            <nav className="hidden md:flex flex-1 gap-6 text-xl">
+            <nav className="hidden md:flex flex-1 gap-6 text-xl text-white">
                 {navLinks.map((link) => (
                     <a
                         key={link.title}

@@ -30,7 +30,7 @@ export default function AboutPage() {
                 />
             </div>
 
-            <div className="fixed block md:hidden top-1 right-1 z-50">
+            <div className="fixed block md:hidden bottom-1 right-1 z-50">
                 <FloatingHireMe
                     screenSize="small"
                     text="Web Developer • UI Developer • "

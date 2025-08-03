@@ -13,7 +13,7 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
     return (
         <>
             <button onClick={() => setIsMenuOpen(true)} >
-                <FaBars size={42} className="cursor-pointer" />
+                <FaBars size={42} className="cursor-pointer text-white" />
             </button>
 
             {isMenuOpen && (

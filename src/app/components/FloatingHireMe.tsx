@@ -97,15 +97,22 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
     return (
         <>
             {showPopup && (
+                // <motion.div
+                //     initial={{ opacity: 0, y: screenSize === "big" ? 100 : -100, scale: 0.5, rotate: -15 }}
+                //     animate={{ opacity: 1, y: screenSize === "big" ? -120 : 0, scale: 1, rotate: 0 }}
+                //     exit={{ opacity: 0, y: screenSize === "big" ? 100 : -100, scale: 0.5, rotate: 15 }}
+                //     transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                //     className={`absolute ${screenSize == 'big' ? "left-1/2" : "left-18"}  transform -translate-x-1/2 bg-gray-800 text-white rounded-xl shadow-xl p-4 flex gap-6 ${screenSize === "small" ? "top-full mt-4" : ""
+                //         }`}   >
                 <motion.div
-                    initial={{ opacity: 0, y: screenSize === "big" ? 100 : -100, scale: 0.5, rotate: -15 }}
-                    animate={{ opacity: 1, y: screenSize === "big" ? -120 : 0, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, y: screenSize === "big" ? 100 : -100, scale: 0.5, rotate: 15 }}
+                    initial={{ opacity: 0, y: 100, scale: 0.5, rotate: -15 }}
+                    animate={{ opacity: 1, y: -280, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, y: 100, scale: 0.5, rotate: 15 }}
                     transition={{ type: "spring", stiffness: 200, damping: 15 }}
                     className={`absolute ${screenSize == 'big' ? "left-1/2" : "left-18"}  transform -translate-x-1/2 bg-gray-800 text-white rounded-xl shadow-xl p-4 flex gap-6 ${screenSize === "small" ? "top-full mt-4" : ""
                         }`}   >
                     {/* WhatsApp Icon */}
-                    <motion.a
+                    < motion.a
                         href="https://wa.me/8240171142"  // Replace with your WhatsApp number
                         target="_blank"
                         rel="noopener noreferrer"
@@ -118,7 +125,7 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
                             <FaWhatsapp size={28} />
                         </div>
                         <p className="text-sm mt-1">WhatsApp</p>
-                    </motion.a>
+                    </motion.a >
 
                     {/* Question Icon */}
                     {/* <motion.div
@@ -133,7 +140,7 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
                         <p className="text-sm mt-1">Query</p>
                     </motion.div> */}
 
-                </motion.div>
+                </motion.div >
             )}
 
 
