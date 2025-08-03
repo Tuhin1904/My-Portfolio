@@ -9,7 +9,7 @@ const Footer = () => {
                 <div>
                     <h3 className="text-2xl font-bold text-gray-300 mb-4">Tuhin</h3>
                     <p className="text-gray-400 text-sm">
-                        Maintained by <span className="font-semibold text-white">Tuhin</span>
+                        Developed and Maintained by <span className="font-semibold text-white">Tuhin</span>
                     </p>
                     <div className="flex gap-4 mt-4 text-xl">
                         <a href="https://github.com/Tuhin1904" className="hover:text-gray-400">
@@ -30,7 +30,7 @@ const Footer = () => {
                     <ul className="space-y-4">
                         {/* <li><a href="#" className="hover:text-gray-400">References</a></li> */}
                         {/* <li><a href="#" className="hover:text-gray-400">Contact Me</a></li> */}
-                        <li><a href="#" className="hover:text-gray-400">Privacy Policy</a></li>
+                        <li><a href="/privacy-policy" className="hover:text-gray-400">Privacy Policy</a></li>
                     </ul>
                 </div>
 

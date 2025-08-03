@@ -31,7 +31,7 @@ const aboutData = [
 
 const AboutEducation = () => {
     return (
-        <section className="bg-gray-900 text-white pb-16 pt-24">
+        <section className="bg-gray-900 text-white pb-16 pt-24 border-b-1">
             <div className="max-w-6xl mx-auto px-6 space-y-16">
                 {aboutData.map((item, idx) => (
                     <div
