@@ -52,7 +52,7 @@ const DescriptionAbout = () => {
                         <p className="text-gray-400">Projects Completed</p>
                     </div>
                     <div>
-                        <h3 className="text-4xl font-bold"><Counter target={2} /></h3>
+                        <h3 className="text-4xl font-bold"><Counter target={1.5} /></h3>
                         <p className="text-gray-400">Years Of Experience</p>
                     </div>
                 </div>

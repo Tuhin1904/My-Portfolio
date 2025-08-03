@@ -120,8 +120,8 @@ const FloatingHireMe: React.FC<CircularTextProps> = ({
             })}
             {/* ✅ Center Circle */}
             <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white hover:bg-gray-700 hover:text-white text-black font-bold text-lg rounded-full w-20 md:w-24 h-20  md:h-24 flex items-center justify-center shadow-lg">
-                    Hire Me
+                <div className="bg-white hover:bg-gray-700 hover:text-white text-black font-bold text-lg rounded-full w-24 md:w-24 h-24  md:h-24 flex items-center justify-center shadow-lg">
+                    Connect with me
                 </div>
             </div>
 
