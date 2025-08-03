@@ -75,7 +75,7 @@ const Experience = () => {
                                         <FaExternalLinkAlt size={18} />
                                     </a>
                                 </div>
-                                <h3 className="text-lg text-gray-500 dark:text-gray-400">{exp.company}</h3>
+                                <h3 className="text-lg text-gray-500 dark:text-gray-400 text-left md:text-center">{exp.company}</h3>
                                 <p className="text-gray-700 dark:text-gray-300 mt-3 text-left">{exp.description}</p>
                                 <p className="text-sm text-gray-400 mt-4 text-left">Last Updated: {exp.updatedDate}</p>
                             </div>
