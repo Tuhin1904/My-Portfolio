@@ -4,9 +4,9 @@ import MobileMenu from './MobileMenu';
 const Header = () => {
     const navLinks = [
         { title: "Home", href: "/" },
-        { title: "Articles", href: "/articles" },
-        { title: "About", href: "/about" },
         { title: "Experience", href: "/experience" },
+        { title: "About", href: "/about" },
+        { title: "Articles", href: "/articles" },
     ];
     return (
         <header className="flex items-center justify-between px-8 py-4 border-b border-gray-800 bg-gray-900">

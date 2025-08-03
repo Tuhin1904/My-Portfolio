@@ -1,7 +1,7 @@
 "use client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useRef, useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaChevronUp, FaTimes } from "react-icons/fa";
 import * as yup from "yup";
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,15 @@ export default function ContactSection() {
     const formRef = useRef<HTMLDivElement | null>(null);
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
+    const [isClosing, setIsClosing] = useState(false);
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowForm(false);
+            setIsClosing(false);
+        }, 300); // Match transition duration
+    };
 
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
     const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
@@ -94,8 +103,18 @@ export default function ContactSection() {
                     </div>
                     {/* Contact Form (Slide-in) */}
                     {showForm && (
-                        <div ref={formRef} className="mt-6 bg-gray-700 rounded-lg p-6 transition-all duration-500 ease-in-out w-full">
-                            <h3 className="text-2xl font-bold mb-4">Send me a message</h3>
+                        <div ref={formRef}
+                            className={`mt-6 bg-gray-700 rounded-lg p-6 transition-all duration-300 ease-in-out w-full 
+                            ${isClosing ? "opacity-0 -translate-y-8" : "opacity-100 translate-y-0"}`}>
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-2xl font-bold">Send me a message</h3>
+                                <button
+                                    onClick={handleClose}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition cursor-pointer"
+                                >
+                                    <FaChevronUp />
+                                </button>
+                            </div>
                             <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
                                 <input {...register("name")} type="text" placeholder="Your Name" className="p-3 rounded bg-gray-800 text-white outline-none" />
                                 {errors.name && <span className="text-red-400 text-sm">{errors.name.message}</span>}

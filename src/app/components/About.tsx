@@ -60,7 +60,7 @@ export default function AboutPage() {
                         As a skilled full-stack developer, I am dedicated to turning ideas into innovative web applications.
                         Explore my latest projects, showcasing my expertise in React.js and web development.
                     </p>
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-6 mb-6 md:mb-0">
                         <a
                             href="https://drive.google.com/file/d/1H5DpA0JzzDTIvZJQZNQpmajTsM5ikaCy/view?usp=sharing"
                             target="_blank"
