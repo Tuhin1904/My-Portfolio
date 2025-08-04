@@ -51,7 +51,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Right Section (Text Content) */}
-                <div className="flex flex-col justify-center">
+                <div className="flex flex-col justify-center mb-5">
                     <h1 className="text-4xl md:text-6xl font-medium  mb-6 ">Hello I'm Tuhin,</h1>
                     <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Transforming Ideas Into Digital Experiences With Code And Design.
@@ -60,7 +60,7 @@ export default function AboutPage() {
                         As a skilled full-stack developer, I am dedicated to turning ideas into innovative web applications.
                         Explore my latest projects, showcasing my expertise in React.js and web development.
                     </p>
-                    <div className="flex items-center gap-6 mb-6 md:mb-0">
+                    <div className="flex items-center gap-6 mb-2 md:mb-0">
                         <a
                             href="https://drive.google.com/file/d/1lrfzynSH-E1JUJLTLYLbJzgr_AWUi08a/view?usp=drive_link"
                             target="_blank"
