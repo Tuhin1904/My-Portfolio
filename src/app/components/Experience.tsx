@@ -4,25 +4,28 @@ import { FaExternalLinkAlt } from 'react-icons/fa'
 
 const experienceData = [
     {
+        "employment_status": "Currently working",
         "company": "Fortmindz Pvt LTD (Present)",
         "title": "ReactJs Developer",
-        "description": "Developing and maintaining modern web applications using React, Next.js, and Tailwind CSS. Collaborating with cross-functional teams for scalable solutions.",
+        "description": "Developing and maintaining modern web applications using React, Next.js, and Tailwind CSS. Building reusable components and implementing responsive design for a seamless user experience. Collaborating with backend teams to integrate APIs and optimize application performance.",
         "updatedDate": "Aug 2025",
         "website": "https://fortmindz.com/",
         "image": "/images/Fortmindz.png"
     },
     {
+        "employment_status": "Previously worked",
         "company": "DynamicPro Technology Solutions",
         "title": "Frontend Developer",
-        "description": "Worked on custom dashboards and web platforms using React and Redux. Focused on performance optimization and responsive UI design.",
+        "description": "First working experience, where I learned from my seniors about building real-world projects using React, Vue, and other modern tools.",
         "updatedDate": "Aug 2025",
         "website": "https://dynamicprotechnologysolutions.com",
         "image": "/images/dts.png"
     },
     {
+        "employment_status": "Previously worked",
         "company": "Grambahar.com",
         "title": "Frontend Developer (Project under guidance of my university senior)",
-        "description": "Developed a rural e-commerce and community platform as part of the final semester project under the guidance of my senior. Built using MERN stack and integrated payment system.",
+        "description": "Developed an e-commerce platform for selling locally produced jaggery in Nadia, WB. Successfully transitioned the business from offline to online, which significantly boosted sales.",
         "updatedDate": "Aug 2025",
         "website": "https://grambahar.com",
         "image": "/images/grambahar.png",
@@ -35,7 +38,7 @@ const Experience = () => {
     return (
         <section className="min-h-screen bg-gray-50 dark:bg-gray-800 pt-10 pb-16 px-6">
             <div className="max-w-5xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Experience</h1>
+                <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">My Work Experience</h1>
 
                 <div className="grid gap-8 sm:grid-cols-1">
                     {experienceData.map((exp, idx) => (
@@ -43,6 +46,10 @@ const Experience = () => {
                             key={idx}
                             className="flex flex-col items-center border p-6 rounded-2xl shadow-md bg-white dark:bg-gray-900 hover:shadow-lg transition"
                         >
+
+                            <h2 className="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-5">
+                                Employment status :
+                                <span className='font-semibold'> {exp.employment_status}</span></h2>
                             {/* Image on top */}
                             <div className="w-full mb-4 relative h-80 rounded-xl overflow-hidden">
                                 <Image

@@ -4,7 +4,7 @@ import { SiNextdotjs, SiTypescript } from "react-icons/si";
 
 export default function OrbitingCirclesDemo() {
     return (
-        <div className=" bg-gray-900 text-white">
+        <div className="bg-gray-900 text-white">
             <h1 className="text-4xl md:text-7xl font-medium text-center pt-12">Skills</h1>
             <div className="relative flex h-[550px] w-full flex-col items-center justify-center overflow-hidden mt-12">
 
@@ -15,23 +15,54 @@ export default function OrbitingCirclesDemo() {
 
                 {/* Outer Circle */}
                 <OrbitingCircles iconSize={50} radius={225} speed={28}>
-                    <FaGithub size={50} />
-                    <FaReact size={50} />
-                    <FaBootstrap size={50} />
-                    <FaVuejs size={50} />
-                    <FaGlobe size={50} />
+                    <div className="flex flex-col items-center">
+                        <FaGithub size={50} />
+                        <span className="text-sm mt-1">GitHub</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <FaReact size={50} />
+                        <span className="text-sm mt-1">React</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <FaBootstrap size={50} />
+                        <span className="text-sm mt-1">Bootstrap</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <FaVuejs size={50} />
+                        <span className="text-sm mt-1">Vue.js</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <FaGlobe size={50} />
+                        <span className="text-sm mt-1">Web</span>
+                    </div>
                 </OrbitingCircles>
 
+                {/* Middle Circle */}
                 <OrbitingCircles iconSize={50} radius={170} speed={18}>
-                    <FaNodeJs size={50} />
-                    <SiNextdotjs size={50} />
-                    <FaJira size={50} />
+                    <div className="flex flex-col items-center">
+                        <FaNodeJs size={50} />
+                        <span className="text-sm mt-1">Node.js</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <SiNextdotjs size={50} />
+                        <span className="text-sm mt-1">Next.js</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <FaJira size={50} />
+                        <span className="text-sm mt-1">Jira</span>
+                    </div>
                 </OrbitingCircles>
 
                 {/* Inner Circle */}
-                <OrbitingCircles iconSize={40} radius={110} reverse speed={10}>
-                    <FaCss3Alt size={50} />
-                    <SiTypescript size={50} />
+                <OrbitingCircles iconSize={40} radius={110} reverse speed={8}>
+                    <div className="flex flex-col items-center">
+                        <FaCss3Alt size={50} />
+                        <span className="text-sm mt-1">CSS3</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <SiTypescript size={50} />
+                        <span className="text-sm mt-1">TypeScript</span>
+                    </div>
                 </OrbitingCircles>
 
                 {/* Center Logo */}
@@ -42,3 +73,4 @@ export default function OrbitingCirclesDemo() {
         </div>
     );
 }
+

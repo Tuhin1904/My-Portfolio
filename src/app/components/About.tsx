@@ -62,7 +62,7 @@ export default function AboutPage() {
                     </p>
                     <div className="flex items-center gap-6 mb-6 md:mb-0">
                         <a
-                            href="https://drive.google.com/file/d/1H5DpA0JzzDTIvZJQZNQpmajTsM5ikaCy/view?usp=sharing"
+                            href="https://drive.google.com/file/d/1lrfzynSH-E1JUJLTLYLbJzgr_AWUi08a/view?usp=drive_link"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-white text-gray-900 px-6 py-3 rounded-md font-semibold hover:bg-gray-200 transition"
