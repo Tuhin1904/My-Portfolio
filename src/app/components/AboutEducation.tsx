@@ -18,16 +18,7 @@ const aboutData = [
         "image": "/images/chair.jpg",
         "layout": "text-right"
     },
-    // {
-    //     "id": 3,
-    //     "title": "My Schooling",
-    //     "description": "Completed my schooling from Krishnanagar Academy, which provided the academic foundation.",
-    //     "date": "03-08-2025",
-    //     "image": "/images/school-placeholder.jpg",
-    //     "layout": "text-left"
-    // }
 ]
-
 
 const AboutEducation = () => {
     return (
