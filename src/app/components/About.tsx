@@ -75,7 +75,7 @@ export default function AboutPage() {
                         Transforming Ideas Into Digital Experiences With Code And Design.
                     </h1>
                     <p className="text-lg text-gray-300 mb-6">
-                        As a skilled full-stack developer, I am dedicated to turning ideas into innovative web applications.
+                        As a skilled frontend developer, I am dedicated to turning ideas into innovative web applications.
                         Explore my latest projects, showcasing my expertise in React.js and web development.
                     </p>
                     <div className="flex items-center gap-6 mb-2 md:mb-0">
