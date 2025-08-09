@@ -2,9 +2,14 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import FloatingHireMe from "./FloatingHireMe";
+import gsap from "gsap";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+
+gsap.registerPlugin(ScrambleTextPlugin);
 
 export default function AboutPage() {
     const rotatingTextRef = useRef<HTMLDivElement | null>(null);
+    const h1Ref1 = useRef(null);
 
     // Rotate text infinitely
     useEffect(() => {
@@ -16,6 +21,19 @@ export default function AboutPage() {
             angle = (angle + 1) % 360;
         }, 20); // rotation speed
         return () => clearInterval(interval);
+    }, []);
+
+    // Scramble effect on text load
+    useEffect(() => {
+        gsap.fromTo(
+            h1Ref1.current,
+            { scrambleText: { text: "", chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", speed: 0.4 } },
+            {
+                duration: 1.8,
+                scrambleText: { text: "Hello I'm Tuhin,", chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", speed: 0.4 },
+                ease: "none",
+            }
+        );
     }, []);
 
     return (
@@ -52,7 +70,7 @@ export default function AboutPage() {
 
                 {/* Right Section (Text Content) */}
                 <div className="flex flex-col justify-center mb-5">
-                    <h1 className="text-4xl md:text-6xl font-medium  mb-6 ">Hello I'm Tuhin,</h1>
+                    <h1 className="text-4xl md:text-6xl font-medium  mb-6 " ref={h1Ref1} >Hello I'm Tuhin,</h1>
                     <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Transforming Ideas Into Digital Experiences With Code And Design.
                     </h1>

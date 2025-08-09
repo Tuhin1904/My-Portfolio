@@ -7,7 +7,11 @@ const Experience = () => {
     return (
         <section className="min-h-screen bg-gray-50 dark:bg-gray-800 pt-10 pb-16 px-6">
             <div className="max-w-5xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">My Work Experience</h1>
+                <h1 className="text-3xl font-semibold mb-8 text-gray-300 flex items-center gap-1">
+                    My Work Exper
+                    <span className="flip-letter inline-block font-mono">i</span>
+                    ence
+                </h1>
 
                 <div className="grid gap-8 sm:grid-cols-1">
                     {experienceData.map((exp, idx) => (
