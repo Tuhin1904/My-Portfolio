@@ -7,7 +7,7 @@ const DescriptionAbout = () => {
     return (
         <section className="bg-gray-900/90 border-t-2 text-white py-16">
             <FadeInOnScroll>
-                <h1 className='text-center text-4xl md:text-6xl mt-6 mb-20 font-semibold'>Where Vision Becomes Experience</h1>
+                <h1 className='text-center text-4xl md:text-6xl mt-6 mb-20 font-semibold'>Designing and developing with purpose.</h1>
             </FadeInOnScroll>
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 items-center text-gray-300">
                 {/* Left Side - Biography */}
