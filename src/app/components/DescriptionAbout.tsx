@@ -15,7 +15,7 @@ const DescriptionAbout = () => {
                     <div>
                         <h3 className="text-gray-400 font-bold text-2xl uppercase mb-4">Biography</h3>
                         <p className="text-lg mb-4">
-                            Hi, I'm <span className="font-bold">Tuhin</span>, frontend Developer with more than 1.5+ years of hands-on experience in developing interactive, responsive, scalable, and user-centric web applications.
+                            Hi, I'm <span className="font-bold">Tuhin</span>, frontend Developer with more than 2+ years of hands-on experience in developing interactive, responsive, scalable, and user-centric web applications.
                         </p>
                         <p className="mb-4 text-lg">
                             I believe great design goes beyond aesthetics — it’s about solving real problems and delivering seamless, enjoyable
@@ -52,7 +52,7 @@ const DescriptionAbout = () => {
                         <p className="text-gray-400">Projects Completed</p>
                     </div>
                     <div>
-                        <h3 className="text-4xl font-bold"><Counter target={1.5} plus="+" /></h3>
+                        <h3 className="text-4xl font-bold"><Counter target={2} plus="+" /></h3>
                         <p className="text-gray-400">Years Of Experience</p>
                     </div>
                 </div>
