@@ -37,9 +37,9 @@ const CursorTracker = () => {
 
     return (
         <>
-            {stars.map((star) => (
+            {stars.map((star, index) => (
                 <div
-                    key={star.id}
+                    key={star.id + index}
                     className="cursor-star"
                     style={{
                         left: star.x,

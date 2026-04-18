@@ -95,14 +95,31 @@ export default function ContactSection() {
                             </h2>
                         </div>
                         <button
-                            onClick={() => setShowForm(true)}
+                            onClick={() => {
+                                // setShowForm(true);
+
+                                window.scrollTo({ top: 0, behavior: "smooth" });
+
+                                setTimeout(() => {
+                                    const el = document.getElementById("startButton");
+                                    if (el) {
+                                        el.classList.add("blink-highlight");
+
+                                        setTimeout(() => {
+                                            el.classList.remove("blink-highlight");
+                                        }, 1500);
+                                    } else {
+                                        console.log("Button not found");
+                                    }
+                                }, 300);
+                            }}
                             className="mt-6 md:mt-0 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition cursor-pointer"
                         >
                             Drop a message
                         </button>
                     </div>
                     {/* Contact Form (Slide-in) */}
-                    {showForm && (
+                    {/* {showForm && (
                         <div ref={formRef}
                             className={`mt-6 bg-gray-700 rounded-lg p-6 transition-all duration-300 ease-in-out w-full 
                             ${isClosing ? "opacity-0 -translate-y-8" : "opacity-100 translate-y-0"}`}>
@@ -136,7 +153,7 @@ export default function ContactSection() {
                                 </p>
                             )}
                         </div>
-                    )}
+                    )} */}
 
                 </div>
             </div>

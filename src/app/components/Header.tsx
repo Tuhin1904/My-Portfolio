@@ -1,7 +1,10 @@
+'use client'
 import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import MobileMenu from './MobileMenu';
 import { Button } from '@/components/ui/button';
 import GetStarted from './GetStarted/GetStarted';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const Header = () => {
   const navLinks = [
@@ -10,8 +13,10 @@ const Header = () => {
     { title: 'About', href: '/about' },
     { title: 'Articles', href: '/articles' },
   ];
+  const getToken = useSelector((state: RootState) => state.auth.accessToken);
+
   return (
-    <header className='flex items-center justify-between px-8 py-4 border-b border-gray-800 bg-gray-900'>
+    <header className={`flex items-center justify-between px-8 py-4 border-b border-gray-800 bg-gray-900 ${getToken && "hidden"}`}>
       {/* Left Navigation */}
       <nav className='hidden md:flex flex-1 gap-6 text-xl text-white'>
         {navLinks.map((link) => (
@@ -24,7 +29,7 @@ const Header = () => {
         ))}
       </nav>
       {/* Mobile Menu Modal */}
-      <div className='flex md:hidden'>
+      <div className='flex flex-1 md:hidden'>
         <MobileMenu navLinks={navLinks} />
       </div>
 
@@ -33,6 +38,9 @@ const Header = () => {
         <div className='w-16 h-16 border-gray-300 text-gray-100 border-4 bg-gray-800 rounded-full flex justify-center items-center text-2xl font-bold'>
           TG
         </div>
+      </div>
+      <div className='flex-1 flex md:hidden ms-auto scale-[0.85]'>
+        <GetStarted />
       </div>
 
       {/* Right Social Icons */}

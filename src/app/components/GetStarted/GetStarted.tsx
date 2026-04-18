@@ -1,11 +1,18 @@
 'use client'
+import { apiRequest } from "@/apiFiles/apiClient";
+import { apiEndpoints } from "@/apiFiles/apiEndpoints";
+import { formSchema } from "@/app/schema/createQuery";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import ButtonSpinner from "../Loading/ButtonSpinner";
+import { toast } from "sonner"
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   name: string;
@@ -22,16 +29,26 @@ export default function StartProjectDialog() {
     formState: { errors, isSubmitting },
     reset,
     setValue,
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    resolver: yupResolver(formSchema),
+    mode: "onChange",
+  });
 
   const [success, setSuccess] = useState(false);
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async (data: FormValues) => {
     try {
-      console.log("Form Data:", data);
+      // console.log("Form Data:", data);
+      const res = await apiRequest({
+        method: "POST",
+        url: apiEndpoints.postRequest,
+        data: { ...data, typeOfUser: "guest" }
+      })
 
-      // 👉 API call here
-      await new Promise((res) => setTimeout(res, 1000));
+      console.log("Response is:", res);
+      toast("Event has been created.")
 
       setSuccess(true);
       reset();
@@ -41,22 +58,42 @@ export default function StartProjectDialog() {
   };
 
   const handleSignIn = () => {
-    console.log("Redirect to auth...");
-    // 👉 your auth logic (Firebase / NextAuth)
+    setOpen(false);
+    router.push("/sign-in");
+
   };
 
+  const onLoad = async () => {
+    try {
+      await apiRequest({
+        method: "GET",
+        url: apiEndpoints.pingRequest
+      })
+
+    } catch (err) {
+      console.log("Server wake up initiated but :", err);
+    }
+  }
+
+  useEffect(() => {
+    // onLoad();
+  }, [])
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={(val) => {
+      if (!val) setSuccess(false); // when closing
+      setOpen(val);
+    }}>
       <DialogTrigger asChild>
-        <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer">
+        <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto" id="startButton">
           Get Started
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[500px] bg-gray-100">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-gray-500 text-xl">
-            Start Your Project
+            Start Your Project With Me
           </DialogTitle>
           <DialogDescription className="text-gray-400">
             Tell me about your idea — I’ll get back with a quote.
@@ -65,8 +102,8 @@ export default function StartProjectDialog() {
 
         {success ? (
           <div className="text-center py-6">
-            <p className="text-green-400 text-lg">
-              ✅ Request submitted successfully!
+            <p className="text-green-700 text-lg">
+              Request submitted successfully!
             </p>
             <p className="text-gray-400 text-sm mt-2">
               I’ll contact you soon.
@@ -109,12 +146,12 @@ export default function StartProjectDialog() {
 
             {/* Work Type */}
             <div>
-              <Select onValueChange={(value) => setValue("workType", value)}>
-                <SelectTrigger className="w-full bg-transparent border border-white/10 text-white">
+              <Select onValueChange={(value) => setValue("workType", value, { shouldValidate: true })}>
+                <SelectTrigger className="w-full bg-transparent border">
                   <SelectValue placeholder="Type of Work" />
                 </SelectTrigger>
 
-                <SelectContent className="bg-[#0f172a] text-white border border-white/10">
+                <SelectContent className="border border-white/10 cursor-pointer">
                   <SelectItem value="web-dev">Web Development</SelectItem>
                   <SelectItem value="app-dev">App Development</SelectItem>
                   <SelectItem value="ui-ux">UI/UX Design</SelectItem>
@@ -131,12 +168,12 @@ export default function StartProjectDialog() {
 
             {/* Budget */}
             <div>
-              <Select onValueChange={(value) => setValue("budget", value)}>
-                <SelectTrigger className="w-full bg-transparent border border-white/10 text-white">
+              <Select onValueChange={(value) => setValue("budget", value, { shouldValidate: true })}>
+                <SelectTrigger className="w-full bg-transparent border">
                   <SelectValue placeholder="Select Budget" />
                 </SelectTrigger>
 
-                <SelectContent className="bg-[#0f172a] text-white border border-white/10">
+                <SelectContent className=" border border-white/10 cursor-pointer">
                   <SelectItem value="10k-25k">₹10k–₹25k</SelectItem>
                   <SelectItem value="25k-50k">₹25k–₹50k</SelectItem>
                   <SelectItem value="50k-1l">₹50k–₹1L</SelectItem>
@@ -177,7 +214,7 @@ export default function StartProjectDialog() {
                 className="w-full bg-white text-black hover:bg-gray-200 cursor-pointer"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit as Guest"}
+                {isSubmitting ? <ButtonSpinner /> : "Submit as Guest"}
               </Button>
 
               {/* Divider */}

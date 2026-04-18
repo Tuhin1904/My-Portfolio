@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Montserrat, Geist } from "next/font/google";
-import "./globals.css";
+import "./global.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { cn } from "@/lib/utils";
+import StorePersistProvider from "./reduxLayout/StorePersistProvider";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -45,9 +46,11 @@ export default function RootLayout({
       <body
         className={montserrat.variable}
       >
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <StorePersistProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </StorePersistProvider>
       </body>
     </html>
   );
