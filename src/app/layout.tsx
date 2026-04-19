@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat, Geist } from "next/font/google";
 import "./global.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../customcomponents/Header";
+import Footer from "../customcomponents/Footer";
 import { cn } from "@/lib/utils";
 import StorePersistProvider from "./reduxLayout/StorePersistProvider";
 

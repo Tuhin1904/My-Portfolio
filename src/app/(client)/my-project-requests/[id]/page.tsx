@@ -1,9 +1,8 @@
 import React from 'react'
-import Experience from '../../customcomponents/Experience'
 
 const page = () => {
     return (
-        <Experience />
+        <div>page</div>
     )
 }
 

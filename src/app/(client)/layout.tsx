@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { FolderKanban, LogOut, Menu, PlusCircle, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useAuthChecker from "@/hooks/useAuthChecker";
-import LogoutButton from "../components/LogoutConfirm";
+import LogoutButton from "../../customcomponents/LogoutConfirm";
+import Image from "next/image";
 
 export default function DashboardLayout({
     children,
@@ -41,7 +42,7 @@ export default function DashboardLayout({
                         TG
                     </div>
                     <button
-                        className="md:hidden"
+                        className="md:hidden cursor-pointer"
                         onClick={() => setOpen(false)}
                     >
                         <X size={22} />
@@ -53,13 +54,26 @@ export default function DashboardLayout({
                         Dashboard
                     </Link> */}
                     <Link href="/my-project-requests" className={getClass("/project-requests")}>
-                        Request
+                        <div className="flex items-center gap-2">
+                            <FolderKanban size={18} />
+                            <span>Request</span>
+                        </div>
+                    </Link>
+                    <Link href="/create-project" className={getClass("/project-requests")}>
+                        <div className="flex items-center gap-2">
+                            <PlusCircle size={18} />
+                            <span>Make Project</span>
+                        </div>
                     </Link>
                     <Link href="/my-profile" className={getClass("/my-profile")}>
-                        My Profile
+                        <div className="flex items-center gap-2">
+                            <User size={18} />
+                            <span>My Profile</span>
+                        </div>
                     </Link>
 
-                    <button className="text-left hover:border hover:border-red-300 hover:bg-gray-800 hover:text-red-300 p-2 rounded mt-4 cursor-pointer">
+                    <button className="flex items-center gap-2 text-left hover:border hover:border-red-300 hover:bg-gray-800 hover:text-red-300 p-2 rounded mt-4 cursor-pointer">
+                        <LogOut size={18} />
                         <LogoutButton />
                     </button>
                 </nav>
@@ -79,15 +93,31 @@ export default function DashboardLayout({
                 {/* Topbar */}
                 <header className="flex items-center justify-between bg-white shadow p-4 h-12">
                     <button
-                        className="md:hidden"
+                        className="md:hidden cursor-pointer"
                         onClick={() => setOpen(true)}
                     >
                         <Menu size={24} />
                     </button>
 
-                    <h1 className="text-lg font-semibold ms-auto capitalize">Welcome
-                        {" " + userInfo.name || "Name"}
-                    </h1>
+                    <div className="flex items-center gap-3 ms-auto">
+                        <h1 className="text-lg font-semibold capitalize">
+                            Welcome {userInfo?.name || "Name"}
+                        </h1>
+
+                        {userInfo?.profilePicUrl ? (
+                            <Image
+                                width={8}
+                                height={8}
+                                src={userInfo.profilePicUrl}
+                                alt="profile"
+                                className="w-8 h-8 rounded-full object-cover border"
+                            />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                <User size={18} />
+                            </div>
+                        )}
+                    </div>
                 </header>
 
                 {/* Page Content */}

@@ -8,9 +8,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const getAccessToken = () => store.getState().auth.accessToken;
 const getRefreshToken = () => store.getState().auth.refreshToken;
 
-const accessToken = getAccessToken();
-const refreshToken = getRefreshToken();
-
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
@@ -18,9 +15,11 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    if (accessToken) {
+    const accessTokenBlock = getAccessToken();
+
+    if (accessTokenBlock) {
       config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${accessTokenBlock}`;
     }
     return config;
   },
@@ -65,20 +64,22 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        if (!refreshToken) {
+        const refreshTokenBlock = getRefreshToken();
+        if (!refreshTokenBlock) {
           store.dispatch(clearTokens());
           return Promise.reject(error);
         }
         const response = await apiClient.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken,
+          refreshTokenBlock,
         });
 
         const newAccessToken = response.data.accessToken;
+        const newRefreshToken = response.data.refreshToken;
 
         store.dispatch(
           setTokens({
             accessToken: newAccessToken,
-            refreshToken: refreshToken,
+            refreshToken: newRefreshToken,
           }),
         );
 
@@ -127,7 +128,7 @@ export const apiRequest = async <T = any>({
     };
 
     const response = await apiClient(config);
-    return response.data;
+    return response?.data || response;
   } catch (error: any) {
     return Promise.reject({
       message: error?.response?.data?.message || "Something went wrong",

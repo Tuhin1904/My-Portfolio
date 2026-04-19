@@ -1,5 +1,5 @@
 import React from 'react'
-import AboutEducation from '../components/AboutEducation'
+import AboutEducation from '../../customcomponents/AboutEducation'
 
 const page = () => {
     return (

@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import ButtonSpinner from "../Loading/ButtonSpinner";
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
+import { workTypes } from "@/const/masterData";
 
 type FormValues = {
   name: string;
@@ -47,8 +48,8 @@ export default function StartProjectDialog() {
         data: { ...data, typeOfUser: "guest" }
       })
 
-      console.log("Response is:", res);
-      toast("Event has been created.")
+      // console.log("Response is:", res);
+      toast("Request submitted successfully!")
 
       setSuccess(true);
       reset();
@@ -57,26 +58,42 @@ export default function StartProjectDialog() {
     }
   };
 
-  const handleSignIn = () => {
-    setOpen(false);
-    router.push("/sign-in");
-
-  };
-
   const onLoad = async () => {
     try {
       await apiRequest({
         method: "GET",
         url: apiEndpoints.pingRequest
       })
+      // store current timestamp after successful ping
+      localStorage.setItem(PING_KEY, Date.now().toString());
 
     } catch (err) {
       console.log("Server wake up initiated but :", err);
     }
   }
+  const PING_KEY = "lastPingTime";
+  const THIRTY_MIN = 30 * 60 * 1000;
+
+  const checkAndPing = () => {
+    const lastPing = localStorage.getItem(PING_KEY);
+    const now = Date.now();
+
+    // First time → call API
+    if (!lastPing) {
+      onLoad();
+      return;
+    }
+
+    const lastTime = parseInt(lastPing, 10);
+
+    // Only call if 30 min passed
+    if (now - lastTime > THIRTY_MIN) {
+      onLoad();
+    }
+  };
 
   useEffect(() => {
-    // onLoad();
+    // checkAndPing();
   }, [])
 
   return (
@@ -152,11 +169,11 @@ export default function StartProjectDialog() {
                 </SelectTrigger>
 
                 <SelectContent className="border border-white/10 cursor-pointer">
-                  <SelectItem value="web-dev">Web Development</SelectItem>
-                  <SelectItem value="app-dev">App Development</SelectItem>
-                  <SelectItem value="ui-ux">UI/UX Design</SelectItem>
-                  <SelectItem value="cloud">Cloud Services</SelectItem>
-                  <SelectItem value="ai">AI Integration</SelectItem>
+                  {workTypes.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {errors.workType && (
@@ -229,7 +246,10 @@ export default function StartProjectDialog() {
                 type="button"
 
                 className="w-full border-white/20 text-white hover:bg-gray-700 cursor-pointer"
-                onClick={handleSignIn}
+                onClick={() => {
+                  setOpen(false);
+                  router.push("/sign-in");
+                }}
               >
                 Sign In & Continue
               </Button>

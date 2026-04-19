@@ -1,9 +1,10 @@
 'use client'
 import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
-import ButtonSpinner from '@/app/components/Loading/ButtonSpinner';
+import ButtonSpinner from '@/customcomponents/Loading/ButtonSpinner';
+import useGuestOnly from '@/hooks/useGuestOnly';
 import { setTokens } from '@/store/slices/AuthSlice';
-import { setUser } from '@/store/slices/UserInfo';
+import { setProfilePic, setUser } from '@/store/slices/UserInfo';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -19,6 +20,9 @@ type FormValues = {
 const page = () => {
     const router = useRouter();
     const dispatch = useDispatch();
+
+    const { isGuest } = useGuestOnly();
+
     const {
         register,
         handleSubmit,
@@ -27,6 +31,8 @@ const page = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    if (!isGuest) return <></>;
 
     const onSubmit = async (data: FormValues) => {
         try {
@@ -43,6 +49,9 @@ const page = () => {
             dispatch(setUser({
                 _id: res.data?.user?._id, email: res.data?.user?.email, name: res.data?.user?.name
             }))
+            dispatch(setProfilePic({
+                profilePicUrl: res.data?.user?.profilePicUrl,
+            }))
             router.push("/my-project-requests");
 
             toast("Welcome!")
@@ -57,7 +66,7 @@ const page = () => {
 
 
     return (
-        <div className=' min-h-[40vh] md:min-h-[70vh] flex justify-center items-center'>
+        <div className=' min-h-[40vh] md:min-h-[70vh] flex justify-center items-center py-4 px-2'>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="w-full max-w-md bg-white p-8 rounded-lg shadow-sm border flex flex-col gap-1.5"
@@ -128,7 +137,6 @@ const page = () => {
                     className="w-full bg-gray-900 text-white py-3 rounded-md font-medium hover:bg-gray-700 transition cursor-pointer mt-2"
                 >
                     {loading ? <ButtonSpinner text="Please wait..." /> : "Continue"}
-
                 </button>
 
                 {/* Divider */}

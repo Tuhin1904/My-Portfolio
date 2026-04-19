@@ -1,14 +1,18 @@
 "use client";
 
+import { RootState } from "@/store";
 import { useState } from "react";
 import { FaBars, FaTimes, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 interface MobileMenuProps {
     navLinks: { title: string; href: string }[];
 }
 
 export default function MobileMenu({ navLinks }: MobileMenuProps) {
+    const accessToken = useSelector((state: RootState) => state.auth.accessToken);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const additionalLink = accessToken ? { title: 'View Projects', href: '/my-project-requests' } : { title: 'Sign In', href: '/sign-in' }
 
     return (
         <>
@@ -28,7 +32,7 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
 
                     {/* Navigation Links */}
                     <nav className="flex flex-col gap-6 text-2xl text-white mt-10">
-                        {navLinks.map((link) => (
+                        {[additionalLink, ...navLinks].map((link) => (
                             <a
                                 key={link.title}
                                 href={link.href}

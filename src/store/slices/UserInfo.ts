@@ -5,12 +5,14 @@ interface User {
   email: string | null;
   name: string | null;
   _id: string | null;
+  profilePicUrl?: string | null;
 }
 
 const initialState: User = {
   email: null,
   name: null,
   _id: null,
+  profilePicUrl: null,
 };
 
 const userSlice = createSlice({
@@ -29,6 +31,14 @@ const userSlice = createSlice({
       state.name = action.payload.name;
       state._id = action.payload._id;
     },
+    setProfilePic: (
+      state,
+      action: PayloadAction<{
+        profilePicUrl: string;
+      }>,
+    ) => {
+      state.profilePicUrl = action.payload.profilePicUrl;
+    },
 
     clearUser: (state) => {
       state.email = null;
@@ -38,5 +48,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, setProfilePic, clearUser } = userSlice.actions;
 export default userSlice.reducer;
