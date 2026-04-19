@@ -36,7 +36,7 @@ const page = () => {
                 method: "GET",
                 url: apiEndpoints.getMyQueries
             })
-            console.log("My projects are :", res?.data)
+            // console.log("My projects are :", res?.data)
             setProjects(res?.data || [])
         } catch (err) {
             console.log("Error is :", err)
@@ -49,12 +49,12 @@ const page = () => {
         getMyProjects();
     }, [])
     return (
-        <div className="p-6">
+        <div className="p-1 sm:p-6">
             <h2 className="text-2xl font-semibold mb-4">All Project Enquiries</h2>
 
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden max-w-md sm:max-w-full">
                 <div className="w-full overflow-x-auto">
-                    <Table className='bg-white min-w-[800px]'>
+                    <Table className='bg-white'>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Work Type</TableHead>
@@ -76,7 +76,7 @@ const page = () => {
                             ) : (
                                 projects.map((item) => (
                                     <TableRow key={item._id}>
-                                        <TableCell>
+                                        <TableCell >
                                             <span className="text-xs px-2 py-1 rounded-sm">
                                                 {getLabel(item.workType)}
                                             </span>
@@ -95,7 +95,6 @@ const page = () => {
                                 ))
                             )}
                         </TableBody>}
-
                     </Table>
                 </div>
             </div>

@@ -14,6 +14,8 @@ import ButtonSpinner from "../Loading/ButtonSpinner";
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import { workTypes } from "@/const/masterData";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 type FormValues = {
   name: string;
@@ -38,11 +40,21 @@ export default function StartProjectDialog() {
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const userToken = useSelector((state: RootState) => state.auth)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log("window.location is :", window.location.hash)
+      if (window.location.hash === "#connect" && (userToken.accessToken == null)) {
+        setOpen(true);
+      }
+    }
+  }, []);
 
   const onSubmit = async (data: FormValues) => {
     try {
       // console.log("Form Data:", data);
-      const res = await apiRequest({
+      await apiRequest({
         method: "POST",
         url: apiEndpoints.postRequest,
         data: { ...data, typeOfUser: "guest" }
@@ -57,44 +69,6 @@ export default function StartProjectDialog() {
       console.error(err);
     }
   };
-
-  const onLoad = async () => {
-    try {
-      await apiRequest({
-        method: "GET",
-        url: apiEndpoints.pingRequest
-      })
-      // store current timestamp after successful ping
-      localStorage.setItem(PING_KEY, Date.now().toString());
-
-    } catch (err) {
-      console.log("Server wake up initiated but :", err);
-    }
-  }
-  const PING_KEY = "lastPingTime";
-  const THIRTY_MIN = 30 * 60 * 1000;
-
-  const checkAndPing = () => {
-    const lastPing = localStorage.getItem(PING_KEY);
-    const now = Date.now();
-
-    // First time → call API
-    if (!lastPing) {
-      onLoad();
-      return;
-    }
-
-    const lastTime = parseInt(lastPing, 10);
-
-    // Only call if 30 min passed
-    if (now - lastTime > THIRTY_MIN) {
-      onLoad();
-    }
-  };
-
-  useEffect(() => {
-    // checkAndPing();
-  }, [])
 
   return (
     <Dialog open={open} onOpenChange={(val) => {
