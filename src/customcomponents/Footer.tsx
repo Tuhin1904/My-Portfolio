@@ -1,9 +1,14 @@
+'use client'
+import { RootState } from '@/store';
 import React from 'react'
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
+import { useSelector } from 'react-redux';
 
 const Footer = () => {
+    const getToken = useSelector((state: RootState) => state.auth.accessToken);
+
     return (
-        <footer className="bg-gray-900 text-white py-10">
+        <footer className={`bg-gray-900 text-white py-10 ${getToken && "hidden"}`}>
             <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Logo / Brand */}
                 <div>

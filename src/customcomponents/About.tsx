@@ -64,7 +64,7 @@ export default function AboutPage() {
                 <div className="flex items-center justify-center">
                     <div className="w-full h-84 md:h-96 bg-gray-700 rounded-lg relative overflow-hidden">
                         {/* <span className="text-gray-400 text-lg">Image Placeholder</span> */}
-                        <Image fill alt="hero" src="/images/codeing_me.webp" className="object-cover" />
+                        <Image fill alt="hero" src="/images/generated-image.png" className="object-cover" />
                     </div>
                 </div>
 
