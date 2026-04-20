@@ -21,7 +21,7 @@ const page = () => {
     const router = useRouter();
     const dispatch = useDispatch();
 
-    const { isGuest } = useGuestOnly();
+    // const { isGuest } = useGuestOnly();
 
     const {
         register,
@@ -32,7 +32,7 @@ const page = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    if (!isGuest) return <></>;
+    // if (!isGuest) return <></>;
 
     const onSubmit = async (data: FormValues) => {
         try {
@@ -43,16 +43,23 @@ const page = () => {
                 data
             })
 
+            console.log("Login Res is :", res)
+
             dispatch(setTokens({
                 accessToken: res.data?.accessToken, refreshToken: res.data?.refreshToken
             }))
             dispatch(setUser({
-                _id: res.data?.user?._id, email: res.data?.user?.email, name: res.data?.user?.name
+                _id: res.data?.user?._id, email: res.data?.user?.email, name: res.data?.user?.name, userRole: res.data?.user?.userRole
             }))
             dispatch(setProfilePic({
                 profilePicUrl: res.data?.user?.profilePicUrl,
             }))
-            router.push("/my-project-requests");
+
+            if (res.data?.user?.userRole == 2) {
+                router.push("/my-project-requests");
+            } else {
+                router.push("/view-clients-req")
+            }
 
             toast("Welcome!")
 

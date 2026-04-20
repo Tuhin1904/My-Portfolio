@@ -6,6 +6,7 @@ interface User {
   name: string | null;
   _id: string | null;
   profilePicUrl?: string | null;
+  userRole?: number | null;
 }
 
 const initialState: User = {
@@ -13,6 +14,7 @@ const initialState: User = {
   name: null,
   _id: null,
   profilePicUrl: null,
+  userRole: null,
 };
 
 const userSlice = createSlice({
@@ -25,11 +27,13 @@ const userSlice = createSlice({
         email: string;
         name: string;
         _id: string;
+        userRole: number;
       }>,
     ) => {
       state.email = action.payload.email;
       state.name = action.payload.name;
       state._id = action.payload._id;
+      state.userRole = action.payload.userRole;
     },
     setProfilePic: (
       state,
@@ -45,6 +49,7 @@ const userSlice = createSlice({
       state.name = null;
       state._id = null;
       state.profilePicUrl = null;
+      state.userRole = null;
     },
   },
 });

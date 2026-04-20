@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FolderKanban, LogOut, Menu, PlusCircle, User, X } from "lucide-react";
+import { BarChart2, FolderKanban, GitGraph, ListChevronsDownUp, LogOut, LucideProjector, Menu, PlusCircle, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -22,8 +22,8 @@ export default function DashboardLayout({
 
     const getClass = (path: string) =>
         `p-2 rounded cursor-pointer ${pathname === path
-            ? "bg-gray-800 text-white"
-            : "hover:bg-gray-800 hover:font-semibold"
+            ? "bg-white text-black"
+            : "hover:bg-white hover:text-black hover:font-semibold"
         }`;
 
     const { isAuthenticated } = useAuthChecker();
@@ -34,10 +34,10 @@ export default function DashboardLayout({
 
             {/* Sidebar */}
             <aside
-                className={`fixed md:static top-0 left-0 z-50 h-full w-68 bg-gray-900 text-white transform transition-transform duration-300 
+                className={`fixed md:static top-0 left-0 z-50 h-full w-72 bg-orange-900 text-white transform transition-transform duration-300 
         ${open ? "translate-x-0" : "-translate-x-full min-h-screen"} md:translate-x-0`}
             >
-                <div className="flex items-center justify-between py-2 px-4 h-12 border-b border-gray-700">
+                <div className="flex items-center justify-between py-2 px-4 h-12 border-b border-orange-950">
                     <div className='w-8 h-8 border-gray-300 text-gray-100 border-4 bg-gray-800 rounded-full flex justify-center items-center text-sm font-semibold cursor-pointer' onClick={() => router.push("/")}>
                         TG
                     </div>
@@ -50,29 +50,27 @@ export default function DashboardLayout({
                 </div>
 
                 <nav className="flex flex-col p-4 gap-3">
-                    {/* <Link href="/my-dashboard" className={getClass("/my-dashboard")}>
-                        Dashboard
-                    </Link> */}
-                    <Link href="/my-project-requests" className={getClass("/project-requests")}>
+
+                    <Link href="/admin-dashboard" className={getClass("/admin-dashboard")}>
                         <div className="flex items-center gap-2">
-                            <FolderKanban size={18} />
-                            <span>Request</span>
+                            <BarChart2 size={18} />
+                            <span>Admin Dashboard</span>
                         </div>
                     </Link>
-                    <Link href="/create-project" className={getClass("/project-requests")}>
+                    <Link href="/view-clients-req" className={getClass("/view-clients-req")}>
                         <div className="flex items-center gap-2">
-                            <PlusCircle size={18} />
-                            <span>Make Project</span>
+                            <ListChevronsDownUp size={18} />
+                            <span>Projects Queries</span>
                         </div>
                     </Link>
-                    <Link href="/my-profile" className={getClass("/my-profile")}>
+                    <Link href="/admin-profile" className={getClass("/admin-profile")}>
                         <div className="flex items-center gap-2">
                             <User size={18} />
-                            <span>My Profile</span>
+                            <span>Profile</span>
                         </div>
                     </Link>
 
-                    <button className="flex items-center gap-2 text-left hover:border hover:border-red-300 hover:bg-gray-800 hover:text-red-300 p-2 rounded mt-4 cursor-pointer">
+                    <button className="flex items-center gap-2 text-left hover:border hover:bg-orange-950 p-2 rounded mt-4 cursor-pointer">
                         <LogOut size={18} />
                         <LogoutButton />
                     </button>
