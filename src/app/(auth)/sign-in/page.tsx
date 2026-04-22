@@ -7,7 +7,7 @@ import { setTokens } from '@/store/slices/AuthSlice';
 import { setProfilePic, setUser } from '@/store/slices/UserInfo';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
@@ -18,6 +18,10 @@ type FormValues = {
 };
 
 const page = () => {
+    const [rememberMe, setRememberMe] = useState(
+        () => localStorage.getItem("rememberMe") === "true"
+    );
+
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -26,8 +30,25 @@ const page = () => {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<FormValues>();
+
+    useEffect(() => {
+        const encrypted = localStorage.getItem("authData");
+
+        if (encrypted) {
+            fetch("/api/decrypt", {
+                method: "POST",
+                body: JSON.stringify({ encrypted }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    setValue("email", data.email);
+                    setValue("password", data.password);
+                });
+        }
+    }, [setValue]);
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -36,6 +57,19 @@ const page = () => {
 
     const onSubmit = async (data: FormValues) => {
         try {
+            const remember = localStorage.getItem("rememberMe") === "true";
+
+            if (remember) {
+                const res = await fetch("/api/encrypt", {
+                    method: "POST",
+                    body: JSON.stringify(data),
+                });
+
+                const { encrypted } = await res.json();
+
+                localStorage.setItem("authData", encrypted);
+            }
+
             setLoading(true);
             const res = await apiRequest({
                 method: "POST",
@@ -137,6 +171,30 @@ const page = () => {
                         {errors.password.message}
                     </p>
                 )}
+
+                {/* Remember Me */}
+                <div className="flex items-center justify-between mt-2 mb-3 px-1">
+                    <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={rememberMe}
+                            onChange={(e) => {
+                                const value = e.target.checked;
+                                setRememberMe(value);
+                                localStorage.setItem("rememberMe", String(value));
+                            }}
+                            className="w-4 h-4 accent-gray-900 cursor-pointer"
+                        />
+                        Remember me
+                    </label>
+
+                    <span
+                        className="text-sm text-gray-500 cursor-pointer hover:underline"
+                        onClick={() => router.push("/forgot-password")}
+                    >
+                        Forgot password?
+                    </span>
+                </div>
 
                 {/* Submit */}
                 <button
