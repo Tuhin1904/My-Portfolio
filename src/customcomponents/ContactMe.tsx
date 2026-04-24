@@ -5,6 +5,8 @@ import { FaChevronUp, FaTimes } from "react-icons/fa";
 import * as yup from "yup";
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
+import { removeHighlight, triggerHighlight } from "@/store/slices/UiSlice";
+import { useDispatch } from "react-redux";
 
 // ✅ Validation Schema
 const schema = yup.object().shape({
@@ -23,6 +25,7 @@ export default function ContactSection() {
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
     const [isClosing, setIsClosing] = useState(false);
+    const dispatch = useDispatch();
 
     const handleClose = () => {
         setIsClosing(true);
@@ -101,16 +104,11 @@ export default function ContactSection() {
                                 window.scrollTo({ top: 0, behavior: "smooth" });
 
                                 setTimeout(() => {
-                                    const el = document.getElementById("startButton");
-                                    if (el) {
-                                        el.classList.add("blink-highlight");
+                                    dispatch(triggerHighlight());
 
-                                        setTimeout(() => {
-                                            el.classList.remove("blink-highlight");
-                                        }, 1500);
-                                    } else {
-                                        console.log("Button not found");
-                                    }
+                                    setTimeout(() => {
+                                        dispatch(removeHighlight());
+                                    }, 1500);
                                 }, 300);
                             }}
                             className="mt-6 md:mt-0 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition cursor-pointer"
@@ -157,6 +155,6 @@ export default function ContactSection() {
 
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

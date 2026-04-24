@@ -70,13 +70,18 @@ export default function StartProjectDialog() {
     }
   };
 
+  const highlight = useSelector(
+    (state: any) => state.ui.highlightStartButton
+  );
+
+
   return (
     <Dialog open={open} onOpenChange={(val) => {
       if (!val) setSuccess(false); // when closing
       setOpen(val);
     }}>
       <DialogTrigger asChild>
-        <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto" id="startButton">
+        <button className={`border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto ${highlight ? "blink-highlight" : ""}`}>
           Get Started
         </button>
       </DialogTrigger>

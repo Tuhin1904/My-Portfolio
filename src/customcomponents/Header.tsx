@@ -57,10 +57,7 @@ const Header = () => {
 
       {/* Right Social Icons */}
       <div className='flex-1 hidden md:flex gap-5 text-3xl justify-end items-center'>
-        {/* <a href="#"><FaTwitter /></a> */}
-        {/* <button className='border border-white text-white text-2xl px-2.5 py-1 rounded-xl cursor-pointer hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all duration-200'>
-          Get Started
-        </button> */}
+
         {!getToken ? <GetStarted /> :
           <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto" id="startButton" onClick={() => router.push("/my-project-requests")}>
             View Projects

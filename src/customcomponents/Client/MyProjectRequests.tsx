@@ -102,7 +102,7 @@ const MyProjectRequests = () => {
                                             {item.message}
                                         </TableCell>
                                         <TableCell className="max-w-[250px] truncate">
-                                            <Button className='cursor-pointer' onClick={() => router.push(`/my-project-requests/${item._id}`)}>View Status</Button>
+                                            <Button className='cursor-pointer hover:bg-gray-700 transition-all duration-200' onClick={() => router.push(`/my-project-requests/${item._id}`)}>View Status</Button>
                                         </TableCell>
                                     </TableRow>
                                 ))

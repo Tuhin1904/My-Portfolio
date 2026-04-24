@@ -3,13 +3,14 @@ import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
 import ButtonSpinner from '@/customcomponents/Loading/ButtonSpinner';
 import useGuestOnly from '@/hooks/useGuestOnly';
+import { RootState } from '@/store';
 import { setTokens } from '@/store/slices/AuthSlice';
 import { setProfilePic, setUser } from '@/store/slices/UserInfo';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
 type FormValues = {
@@ -21,6 +22,14 @@ const page = () => {
     const [rememberMe, setRememberMe] = useState(
         () => localStorage.getItem("rememberMe") === "true"
     );
+    const token = useSelector((state: RootState) => state.auth.accessToken);
+    // const user = useSelector((state:RootState) => state)
+
+    useEffect(() => {
+        if (token) {
+            router.push("/");
+        }
+    }, []);
 
     const router = useRouter();
     const dispatch = useDispatch();

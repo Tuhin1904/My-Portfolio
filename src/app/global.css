@@ -189,25 +189,22 @@ body {
 }
 
 
-@keyframes blinkHighlight {
-  0% {
-    box-shadow: 0 0 0px rgba(59, 130, 246, 0);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(59, 130, 246, 0.9);
-    border-color: rgb(59, 130, 246);
-    color: rgb(59, 130, 246);
-    transform: scale(1.06);
-  }
-  100% {
-    box-shadow: 0 0 0px rgba(59, 130, 246, 0);
-    transform: scale(1);
-  }
+.blink-highlight {
+  animation: blink 0.5s ease-in-out 3;
 }
 
-.blink-highlight {
-  animation: blinkHighlight 0.5s ease-in-out 3;
-  border-color: rgb(251, 191, 36) !important;
-  color: rgb(251, 191, 36) !important;
+@keyframes blink {
+  0% {
+    background-color: white;
+    color: black;
+  }
+  50% {
+    background-color: #d53312;
+    color: white;
+    color: black;
+  }
+  100% {
+    background-color: white;
+    color: black;
+  }
 }
