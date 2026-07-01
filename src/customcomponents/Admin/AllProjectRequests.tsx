@@ -30,35 +30,46 @@ const AllProjectRequests = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [projects, setProjects] = useState<Inquiry[]>([]);
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 6;
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [mobileColIndex, setMobileColIndex] = useState(0);
 
-    const getMyProjects = async () => {
+    const mobileColumns = [
+        "Work Type",
+        "Budget",
+        "User Type",
+        "Email",
+        "Message",
+        "Actions"
+    ];
+
+    const getMyProjects = async (page: number) => {
         try {
             setLoading(true);
             const res = await apiRequest({
                 method: "GET",
-                url: apiEndpoints.getAllQueries
-            })
+                url: apiEndpoints.getAllQueries,
+                params: {
+                    page: page,
+                    pageSize: ITEMS_PER_PAGE
+                }
+            });
             // console.log("My projects are :", res?.data)
-            setProjects(res?.data || [])
+            setProjects(res?.data || []);
+            if (res?.pagination) {
+                setTotalPages(res.pagination.totalPages);
+            }
         } catch (err) {
-            console.log("Error is :", err)
+            console.log("Error is :", err);
         } finally {
             setLoading(false);
         }
     }
 
     useEffect(() => {
-        getMyProjects();
-    }, [])
-
-    const totalPages = Math.ceil(projects.length / ITEMS_PER_PAGE);
-
-    const paginatedProjects = projects.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
-    );
+        getMyProjects(currentPage);
+    }, [currentPage]);
 
     return (
         <div className="p-1 sm:p-6">
@@ -69,45 +80,58 @@ const AllProjectRequests = () => {
                     <Table className='bg-white'>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Work Type</TableHead>
-                                <TableHead>Budget</TableHead>
-                                <TableHead>User Type</TableHead>
                                 <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Message</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead className={mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}>Work Type</TableHead>
+                                <TableHead className={mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}>Budget</TableHead>
+                                <TableHead className={mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}>User Type</TableHead>
+                                <TableHead className={mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}>Email</TableHead>
+                                <TableHead className={mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}>Message</TableHead>
+                                <TableHead className={mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         {loading ? <SkeletonTable /> : <TableBody>
-                            {paginatedProjects.length === 0 ? (
+                            {projects.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="text-center py-6">
+                                    <TableCell colSpan={7} className="text-center py-6 text-zinc-500">
                                         No data found
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                paginatedProjects.map((item) => (
+                                projects.map((item) => (
                                     <TableRow key={item._id}>
-                                        <TableCell >
+                                        <TableCell>{item.name}</TableCell>
+                                        <TableCell className={mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}>
                                             <span className="text-xs px-2 py-1 rounded-sm">
                                                 {getLabel(item.workType)}
                                             </span>
                                         </TableCell>
-                                        <TableCell>{item.budget}</TableCell>
-                                        <TableCell className='capitalize'>{item.typeOfUser}</TableCell>
-                                        <TableCell>{item.name}</TableCell>
-                                        <TableCell>{item.email}</TableCell>
-                                        <TableCell className="max-w-[250px] truncate">
+                                        <TableCell className={mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}>{item.budget}</TableCell>
+                                        <TableCell className={`capitalize ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>{item.typeOfUser}</TableCell>
+                                        <TableCell className={mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}>{item.email}</TableCell>
+                                        <TableCell className={`max-w-[250px] truncate ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>
                                             {item.message}
                                         </TableCell>
-                                        <TableCell className="max-w-[250px] truncate">
-                                            <Button className='cursor-pointer bg-orange-900' onClick={() => router.push(`/view-clients-req/${item._id}`)}>View Status</Button>
+                                        <TableCell className={`max-w-[250px] truncate ${mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}`}>
+                                            <Button className='cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white' onClick={() => router.push(`/view-clients-req/${item._id}`)}>View Status</Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             )}
                         </TableBody>}
                     </Table>
+                </div>
+                {/* Mobile Column Navigator */}
+                <div className="flex md:hidden justify-center items-center gap-2 py-4 border-t bg-zinc-50">
+                    {mobileColumns.map((label, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => setMobileColIndex(idx)}
+                            className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 cursor-pointer ${
+                                mobileColIndex === idx ? "bg-emerald-600 scale-125" : "bg-zinc-300 hover:bg-zinc-400"
+                            }`}
+                            aria-label={`Show ${label} column`}
+                        />
+                    ))}
                 </div>
                 <PaginationComp currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
             </div>

@@ -5,6 +5,7 @@ import GetStarted from './GetStarted/GetStarted';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Header = () => {
   const pathname = usePathname();
@@ -47,7 +48,13 @@ const Header = () => {
         </div>
       </div>
       {!getToken ?
-        <div className='flex-1 flex md:hidden ms-auto scale-[0.85]'>
+        <div className='flex-1 flex md:hidden ms-auto items-center gap-2 scale-[0.85]'>
+          <Link
+            href="/sign-in"
+            className="text-gray-400 hover:text-white text-sm transition-colors whitespace-nowrap"
+          >
+            Login
+          </Link>
           <GetStarted />
         </div> :
         <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto  block md:hidden" id="startButton" onClick={() => router.push("/my-project-requests")}>
@@ -58,10 +65,21 @@ const Header = () => {
       {/* Right Social Icons */}
       <div className='flex-1 hidden md:flex gap-5 text-3xl justify-end items-center'>
 
-        {!getToken ? <GetStarted /> :
+        {!getToken ? (
+          <div className="flex items-center gap-3">
+            <Link
+              href="/sign-in"
+              className="text-gray-400 hover:text-white text-base transition-colors whitespace-nowrap"
+            >
+              Login
+            </Link>
+            <GetStarted />
+          </div>
+        ) : (
           <button className="border border-white text-white text-lg px-2 py-1 rounded-xl hover:text-[#c1c0c0] hover:border-[#c1c0c0] transition-all cursor-pointer whitespace-nowrap w-fit max-w-full ms-auto" id="startButton" onClick={() => router.push("/my-project-requests")}>
             View Projects
-          </button>}
+          </button>
+        )}
 
         <a className='text-white' href='https://github.com/Tuhin1904'>
           <FaGithub />

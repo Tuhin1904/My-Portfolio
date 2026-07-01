@@ -8,4 +8,5 @@ export const apiEndpoints = {
   signIn: "/users/signin",
   uploadFile: "/file/upload",
   updateProfile: "/users/update-profile",
+  refreshToken: "/users/refresh-token",
 };

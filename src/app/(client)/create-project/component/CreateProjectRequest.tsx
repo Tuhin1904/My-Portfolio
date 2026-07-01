@@ -63,7 +63,7 @@ const CreateProjectRequest = () => {
         <div className="min-h-[50vh] flex justify-center items-start">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="w-full bg-white p-8 rounded-lg shadow-sm border flex flex-col gap-2"
+                className="w-full max-w-7xl bg-white p-8 rounded-lg shadow-sm border flex flex-col gap-2"
             >
                 <h2 className="text-2xl font-semibold text-center mb-6">
                     Work Inquiry
@@ -189,7 +189,7 @@ const CreateProjectRequest = () => {
                 {/* Submit */}
                 <button
                     type="submit"
-                    className="w-full bg-gray-900 text-white py-3 rounded-md font-medium hover:bg-gray-700 transition mt-2 cursor-pointer"
+                    className="w-full sm:w-6/12  ml-auto bg-gray-900 text-white py-3 rounded-md font-medium hover:bg-gray-700 transition mt-2 cursor-pointer"
                 >
                     Submit
                 </button>

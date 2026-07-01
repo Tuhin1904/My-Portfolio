@@ -88,10 +88,10 @@ export default function StartProjectDialog() {
 
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-gray-500 text-xl">
+          <DialogTitle className="text-gray-700 text-xl">
             Start Your Project With Me
           </DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogDescription className="text-gray-600">
             Tell me about your idea — I’ll get back with a quote.
           </DialogDescription>
         </DialogHeader>
@@ -230,7 +230,7 @@ export default function StartProjectDialog() {
                   router.push("/sign-in");
                 }}
               >
-                Sign In & Continue
+                Sign In
               </Button>
 
             </div>

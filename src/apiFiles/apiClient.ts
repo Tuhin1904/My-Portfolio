@@ -2,6 +2,7 @@
 import { store } from "@/store";
 import { clearTokens, setTokens } from "@/store/slices/AuthSlice";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import { apiEndpoints } from "@/apiFiles/apiEndpoints";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -42,7 +43,7 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
-    if (originalRequest?.url?.includes("/auth/refresh")) {
+    if (originalRequest?.url?.includes(apiEndpoints.refreshToken)) {
       store.dispatch(clearTokens());
       return Promise.reject(error);
     }
@@ -69,12 +70,12 @@ apiClient.interceptors.response.use(
           store.dispatch(clearTokens());
           return Promise.reject(error);
         }
-        const response = await apiClient.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshTokenBlock,
+        const response = await apiClient.post(`${API_BASE_URL}${apiEndpoints.refreshToken}`, {
+          refreshToken: refreshTokenBlock,
         });
 
-        const newAccessToken = response.data.accessToken;
-        const newRefreshToken = response.data.refreshToken;
+        const newAccessToken = response.data?.data?.accessToken || response.data?.accessToken;
+        const newRefreshToken = response.data?.data?.refreshToken || response.data?.refreshToken;
 
         store.dispatch(
           setTokens({
