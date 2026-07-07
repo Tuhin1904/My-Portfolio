@@ -99,7 +99,7 @@ export default function ContactSection() {
                 </div>
 
                 {/* Inline Contact Form */}
-                {/* <div className="glass-card rounded-2xl p-8">
+                <div className="glass-card rounded-2xl p-8">
                     <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                         <span className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(to bottom, #6366f1, #a855f7)' }} />
                         Send me a message
@@ -150,7 +150,7 @@ export default function ContactSection() {
                             </p>
                         )}
                     </form>
-                </div> */}
+                </div>
             </div>
         </section>
     );
