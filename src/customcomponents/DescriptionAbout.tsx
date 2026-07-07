@@ -72,7 +72,7 @@ const DescriptionAbout = () => {
                             {/* Projects stat */}
                             <div className="glass-card glow-card rounded-2xl p-8 flex flex-col items-center text-center">
                                 <h3 className="text-6xl font-bold gradient-text mb-2">
-                                    <Counter target={6} />
+                                    <Counter target={7} />
                                 </h3>
                                 <div className="w-12 h-0.5 rounded-full mb-3" style={{ background: 'linear-gradient(to right, #6366f1, #a855f7)' }} />
                                 <p className="text-gray-400 font-medium uppercase tracking-wider text-sm">Projects Completed</p>
@@ -80,7 +80,7 @@ const DescriptionAbout = () => {
                             {/* Experience stat */}
                             <div className="glass-card glow-card rounded-2xl p-8 flex flex-col items-center text-center">
                                 <h3 className="text-6xl font-bold gradient-text mb-2">
-                                    <Counter target={2} plus="+" />
+                                    <Counter target={2.5} plus="+" />
                                 </h3>
                                 <div className="w-12 h-0.5 rounded-full mb-3" style={{ background: 'linear-gradient(to right, #6366f1, #a855f7)' }} />
                                 <p className="text-gray-400 font-medium uppercase tracking-wider text-sm">Years Of Experience</p>

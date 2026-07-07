@@ -7,7 +7,7 @@ const aboutData = [
         "title": "Master of Science (M.Sc)",
         "institution": "West Bengal State University",
         "description": "Developed strong analytical and programming skills that laid the foundation for my professional career. This was where my love for problem-solving through code truly began.",
-        "date": "2022 – 2024",
+        "date": "2021 – 2023",
         "image": "/images/me-university.jpg",
         "icon": "🎓"
     },
@@ -16,7 +16,7 @@ const aboutData = [
         "title": "Bachelor of Science (B.Sc)",
         "institution": "Barrackpore Rastraguru Surendranath College",
         "description": "Discovered the actual potential of a personal computer during my B.Sc years. Before this, I had no idea about what a developer's job is — this was where my journey began.",
-        "date": "2019 – 2022",
+        "date": "2018 – 2021",
         "image": "/images/chair.jpg",
         "icon": "🏫"
     },
