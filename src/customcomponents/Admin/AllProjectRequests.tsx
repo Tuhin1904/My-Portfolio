@@ -2,19 +2,12 @@
 import { apiRequest } from '@/apiFiles/apiClient'
 import { apiEndpoints } from '@/apiFiles/apiEndpoints'
 import React, { useEffect, useState } from 'react'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import SkeletonTable from '@/customcomponents/SkeletonTable';
-import { getLabel } from '@/const/masterData';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import PaginationComp from '../Pagination/Pagination';
+import SkeletonTable from '@/customcomponents/SkeletonTable'
+import { getLabel } from '@/const/masterData'
+import { useRouter } from 'next/navigation'
+import PaginationComp from '../Pagination/Pagination'
+import { FaExternalLinkAlt } from 'react-icons/fa'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Inquiry = {
     _id: string;
@@ -26,6 +19,8 @@ type Inquiry = {
     message: string;
 };
 
+const mobileColumns = ["Work Type", "Budget", "User Type", "Email", "Message", "Actions"];
+
 const AllProjectRequests = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -35,105 +30,131 @@ const AllProjectRequests = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [mobileColIndex, setMobileColIndex] = useState(0);
 
-    const mobileColumns = [
-        "Work Type",
-        "Budget",
-        "User Type",
-        "Email",
-        "Message",
-        "Actions"
-    ];
-
     const getMyProjects = async (page: number) => {
         try {
             setLoading(true);
             const res = await apiRequest({
                 method: "GET",
                 url: apiEndpoints.getAllQueries,
-                params: {
-                    page: page,
-                    pageSize: ITEMS_PER_PAGE
-                }
+                params: { page, pageSize: ITEMS_PER_PAGE }
             });
-            // console.log("My projects are :", res?.data)
             setProjects(res?.data || []);
-            if (res?.pagination) {
-                setTotalPages(res.pagination.totalPages);
-            }
+            if (res?.pagination) setTotalPages(res.pagination.totalPages);
         } catch (err) {
-            console.log("Error is :", err);
+            console.log("Error:", err);
         } finally {
             setLoading(false);
         }
     }
 
-    useEffect(() => {
-        getMyProjects(currentPage);
-    }, [currentPage]);
+    useEffect(() => { getMyProjects(currentPage); }, [currentPage]);
 
     return (
-        <div className="p-1 sm:p-6">
-            <h2 className="text-2xl font-semibold mb-4">All Project Enquiries</h2>
+        <div className="space-y-6">
+            {/* Heading */}
+            <div>
+                <p className="text-indigo-400 text-xs font-semibold uppercase tracking-widest mb-1">Admin</p>
+                <h1 className="text-2xl font-bold text-white">Project Enquiries</h1>
+            </div>
 
-            <div className="border rounded-lg overflow-hidden max-w-md sm:max-w-full">
+            {/* Table card */}
+            <div className="glass-card rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+
+                {/* Table */}
                 <div className="w-full overflow-x-auto">
-                    <Table className='bg-white'>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead className={mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}>Work Type</TableHead>
-                                <TableHead className={mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}>Budget</TableHead>
-                                <TableHead className={mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}>User Type</TableHead>
-                                <TableHead className={mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}>Email</TableHead>
-                                <TableHead className={mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}>Message</TableHead>
-                                <TableHead className={mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}>Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        {loading ? <SkeletonTable /> : <TableBody>
-                            {projects.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={7} className="text-center py-6 text-zinc-500">
-                                        No data found
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                projects.map((item) => (
-                                    <TableRow key={item._id}>
-                                        <TableCell>{item.name}</TableCell>
-                                        <TableCell className={mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}>
-                                            <span className="text-xs px-2 py-1 rounded-sm">
-                                                {getLabel(item.workType)}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className={mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}>{item.budget}</TableCell>
-                                        <TableCell className={`capitalize ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>{item.typeOfUser}</TableCell>
-                                        <TableCell className={mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}>{item.email}</TableCell>
-                                        <TableCell className={`max-w-[250px] truncate ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>
-                                            {item.message}
-                                        </TableCell>
-                                        <TableCell className={`max-w-[250px] truncate ${mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}`}>
-                                            <Button className='cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white' onClick={() => router.push(`/view-clients-req/${item._id}`)}>View Status</Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>}
-                    </Table>
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="border-b border-white/5">
+                                <th className="text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold">Name</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}`}>Work Type</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>Budget</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>User Type</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>Email</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>Message</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}`}>Actions</th>
+                            </tr>
+                        </thead>
+                        {loading ? (
+                            <SkeletonTable />
+                        ) : (
+                            <tbody>
+                                {projects.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="text-center py-16 text-gray-600">
+                                            <div className="flex flex-col items-center gap-2">
+                                                <span className="text-3xl">📭</span>
+                                                <span className="text-sm">No enquiries found</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    projects.map((item, idx) => (
+                                        <tr key={item._id}
+                                            className={`border-b border-white/5 transition-colors duration-150 hover:bg-white/3 ${idx % 2 === 0 ? '' : 'bg-white/[0.02]'}`}>
+                                            <td className="px-5 py-4 text-white font-medium">{item.name}</td>
+                                            <td className={`px-5 py-4 ${mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <span className="text-xs px-2.5 py-1 rounded-full font-medium"
+                                                    style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)', color: '#a5b4fc' }}>
+                                                    {getLabel(item.workType)}
+                                                </span>
+                                            </td>
+                                            <td className={`px-5 py-4 text-gray-400 ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>{item.budget}</td>
+                                            <td className={`px-5 py-4 capitalize ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${item.typeOfUser === 'guest' ? 'badge-past' : 'badge-active'}`}>
+                                                    {item.typeOfUser}
+                                                </span>
+                                            </td>
+                                            <td className={`px-5 py-4 text-gray-400 text-xs ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>{item.email}</td>
+                                            <td className={`px-5 py-4 max-w-[200px] truncate text-gray-400 text-xs ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>{item.message}</td>
+                                            <td className={`px-5 py-4 ${mobileColIndex === 5 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <button
+                                                    onClick={() => router.push(`/view-clients-req/${item._id}`)}
+                                                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer hover:bg-indigo-500/10"
+                                                >
+                                                    View <FaExternalLinkAlt size={10} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        )}
+                    </table>
                 </div>
+
                 {/* Mobile Column Navigator */}
-                <div className="flex md:hidden justify-center items-center gap-2 py-4 border-t bg-zinc-50">
-                    {mobileColumns.map((label, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setMobileColIndex(idx)}
-                            className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 cursor-pointer ${
-                                mobileColIndex === idx ? "bg-emerald-600 scale-125" : "bg-zinc-300 hover:bg-zinc-400"
-                            }`}
-                            aria-label={`Show ${label} column`}
-                        />
-                    ))}
+                <div className="flex md:hidden justify-between items-center px-5 py-3 border-t border-white/5">
+                    <button
+                        onClick={() => setMobileColIndex(i => Math.max(0, i - 1))}
+                        disabled={mobileColIndex === 0}
+                        className="text-gray-500 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+                    >
+                        <ChevronLeft size={18} />
+                    </button>
+                    <div className="flex gap-2">
+                        {mobileColumns.map((label, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setMobileColIndex(idx)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${mobileColIndex === idx ? "scale-125" : "bg-gray-700 hover:bg-gray-500"}`}
+                                style={mobileColIndex === idx ? { background: 'linear-gradient(135deg, #6366f1, #a855f7)' } : {}}
+                                aria-label={`Show ${label}`}
+                            />
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => setMobileColIndex(i => Math.min(mobileColumns.length - 1, i + 1))}
+                        disabled={mobileColIndex === mobileColumns.length - 1}
+                        className="text-gray-500 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+                    >
+                        <ChevronRight size={18} />
+                    </button>
                 </div>
-                <PaginationComp currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+
+                {/* Pagination */}
+                <div className="border-t border-white/5 px-5 py-3">
+                    <PaginationComp currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+                </div>
             </div>
         </div>
     )

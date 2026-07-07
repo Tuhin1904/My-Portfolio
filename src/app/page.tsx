@@ -1,17 +1,28 @@
+import dynamic from 'next/dynamic';
 import AboutPage from "../customcomponents/About";
-import ContactForm from "../customcomponents/ContactMe";
-import CursorTracker from "../customcomponents/Cursor";
-import DescriptionAbout from "../customcomponents/DescriptionAbout";
-import OrbitingCirclesDemo from "../customcomponents/OrbitingCircleComponent";
+import AboutEducation from "../customcomponents/AboutEducation";
 
+const CursorTracker = dynamic(() => import("../customcomponents/Cursor"));
+const DescriptionAbout = dynamic(() => import("../customcomponents/DescriptionAbout"));
+const Experience = dynamic(() => import("../customcomponents/Experience"));
+const OrbitingCirclesDemo = dynamic(() => import("../customcomponents/OrbitingCircleComponent"));
+const ContactForm = dynamic(() => import("../customcomponents/ContactMe"));
 
 export default function Home() {
   return (
     <>
       <CursorTracker />
+      {/* Hero — who is Tuhin */}
       <AboutPage />
+      {/* Bio, years of experience & project stats */}
       <DescriptionAbout />
+      {/* Education background */}
+      <AboutEducation />
+      {/* Work experience timeline */}
+      <Experience />
+      {/* Tech-stack skills orbit */}
       <OrbitingCirclesDemo />
+      {/* Contact CTA */}
       <ContactForm />
     </>
   );

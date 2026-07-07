@@ -16,12 +16,15 @@ import { useDispatch } from "react-redux";
 import { clearTokens, } from "@/store/slices/AuthSlice"; // adjust path
 import { useRouter } from "next/navigation";
 import { clearUser } from "@/store/slices/UserInfo";
+import { removeFcmToken } from "@/lib/fcm";
 
 const LogoutButton = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        // Clear FCM token from backend first so no more pushes land after logout
+        await removeFcmToken();
         dispatch(clearTokens());
         dispatch(clearUser());
         router.push("/sign-in");

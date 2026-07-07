@@ -8,22 +8,34 @@ const Footer = () => {
     const getToken = useSelector((state: RootState) => state.auth.accessToken);
 
     return (
-        <footer className={`bg-gray-900 text-white py-10 ${getToken && "hidden"}`}>
-            <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <footer className={`relative bg-gray-900 text-white pt-12 pb-6 overflow-hidden ${getToken && "hidden"}`}>
+            {/* Top gradient border */}
+            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(to right, transparent, #6366f1, #a855f7, transparent)' }} />
+
+            {/* Subtle background glow */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-32 bg-indigo-600/8 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
                 {/* Logo / Brand */}
                 <div>
-                    <h3 className="text-2xl font-bold text-gray-300 mb-4">Tuhin</h3>
-                    <p className="text-gray-400 text-sm">
-                        Developed and Maintained by <span className="font-semibold text-white">Tuhin</span>
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
+                            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+                            TG
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Tuhin Ghosh</h3>
+                    </div>
+                    <p className="text-gray-500 text-sm mb-5 leading-relaxed">
+                        Transforming ideas into digital experiences with code and design.
                     </p>
-                    <div className="flex gap-4 mt-4 text-xl">
-                        <a href="https://github.com/Tuhin1904" className="hover:text-gray-400">
+                    <div className="flex gap-4 text-xl">
+                        <a href="https://github.com/Tuhin1904" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200">
                             <FaGithub />
                         </a>
-                        <a href="https://www.linkedin.com/in/tuhinghosh19/" className="hover:text-gray-400">
+                        <a href="https://www.linkedin.com/in/tuhinghosh19/" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200">
                             <FaLinkedin />
                         </a>
-                        <a href="https://www.instagram.com/tuhingh19/" className="hover:text-gray-400">
+                        <a href="https://www.instagram.com/tuhingh19/" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200">
                             <FaInstagram />
                         </a>
                     </div>
@@ -31,34 +43,43 @@ const Footer = () => {
 
                 {/* Sitemap */}
                 <div>
-                    <h4 className="font-semibold mb-4 text-lg">Sitemap</h4>
-                    <ul className="space-y-4">
-                        {/* <li><a href="#" className="hover:text-gray-400">References</a></li> */}
-                        {/* <li><a href="#" className="hover:text-gray-400">Contact Me</a></li> */}
-                        <li><a href="/privacy-policy" className="hover:text-gray-400">Privacy Policy</a></li>
+                    <h4 className="font-semibold mb-5 text-sm uppercase tracking-widest text-gray-400">Sitemap</h4>
+                    <ul className="space-y-3">
+                        <li>
+                            <a href="/" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Home</a>
+                        </li>
+                        <li>
+                            <a href="/articles" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Articles</a>
+                        </li>
+                        <li>
+                            <a href="/privacy-policy" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Privacy Policy</a>
+                        </li>
                     </ul>
                 </div>
 
-                {/* Address */}
+                {/* Contact */}
                 <div>
-                    <h4 className="font-semibold mb-4 text-lg">Address</h4>
-                    <ul className="space-y-4">
-                        <li className="flex items-center gap-2">
-                            <FaPhoneAlt /> +91 824 017 1142
+                    <h4 className="font-semibold mb-5 text-sm uppercase tracking-widest text-gray-400">Contact</h4>
+                    <ul className="space-y-3">
+                        <li className="flex items-center gap-3 text-gray-500 text-sm">
+                            <FaPhoneAlt className="text-indigo-500 flex-shrink-0" />
+                            +91 824 017 1142
                         </li>
-                        <li className="flex items-center gap-2">
-                            <FaEnvelope /> iamtuhinn@gmail.com
+                        <li className="flex items-center gap-3 text-gray-500 text-sm">
+                            <FaEnvelope className="text-indigo-500 flex-shrink-0" />
+                            iamtuhinn@gmail.com
                         </li>
-                        <li className="flex items-center gap-2">
-                            <FaMapMarkerAlt /> Krishnanagar, West Bengal, India
+                        <li className="flex items-center gap-3 text-gray-500 text-sm">
+                            <FaMapMarkerAlt className="text-indigo-500 flex-shrink-0" />
+                            Krishnanagar, West Bengal, India
                         </li>
                     </ul>
                 </div>
             </div>
 
             {/* Bottom Bar */}
-            <div className="text-center text-gray-500 mt-8 text-sm border-t border-gray-700 pt-4">
-                © {new Date().getFullYear()} All rights reserved | Maintained by Tuhin
+            <div className="relative mt-10 pt-6 border-t border-white/5 text-center text-gray-600 text-xs">
+                © {new Date().getFullYear()} Tuhin Ghosh · All rights reserved
             </div>
         </footer>
     )

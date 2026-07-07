@@ -1,10 +1,5 @@
-import React from 'react'
-import Experience from '../../customcomponents/Experience'
+import { redirect } from 'next/navigation'
 
-const page = () => {
-    return (
-        <Experience />
-    )
+export default function ExperiencePage() {
+    redirect('/')
 }
-
-export default page

@@ -1,63 +1,93 @@
 import { experienceData } from '@/const/experience'
 import Image from 'next/image'
 import React from 'react'
-import { FaExternalLinkAlt } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaBriefcase } from 'react-icons/fa'
 
 const Experience = () => {
     return (
-        <section className="min-h-screen bg-gray-50 dark:bg-gray-800 pt-10 pb-16 px-6">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-3xl font-semibold mb-8 text-gray-300 flex items-center gap-1">
-                    My Work Exper
-                    <span className="flip-letter inline-block font-mono">i</span>
-                    ence
-                </h1>
+        <section className="relative bg-gray-900 pt-24 pb-24 px-6 border-t border-white/5 overflow-hidden">
+            {/* Background glows */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/8 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-violet-600/8 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="grid gap-8 sm:grid-cols-1">
+            <div className="relative max-w-5xl mx-auto">
+                {/* Section Heading */}
+                <div className="mb-16">
+                    <p className="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Career</p>
+                    <h2 className="text-4xl text-white md:text-6xl font-semibold flex items-center gap-3 flex-wrap">
+                        My Work{" "}
+                        <span className="gradient-text">
+                            Exper
+                            <span className="flip-letter inline-block font-mono" style={{ WebkitTextFillColor: 'var(--th-text)', color: 'var(--th-text)' }}>i</span>
+                            ence
+                        </span>
+                    </h2>
+                </div>
+
+                <div className="grid gap-8">
                     {experienceData.map((exp, idx) => (
                         <div
                             key={idx}
-                            className="flex flex-col items-center border p-6 rounded-2xl shadow-md bg-white dark:bg-gray-900 hover:shadow-lg transition"
+                            className="glass-card glow-card rounded-2xl overflow-hidden"
                         >
-
-                            <h2 className="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-5">
-                                Employment status :
-                                <span className='font-semibold'> {exp.employment_status}</span></h2>
-                            {/* Image on top */}
-                            <div className="w-full mb-4 relative h-80 rounded-xl overflow-hidden">
-                                <Image
-                                    src={exp.image}
-                                    alt={`${exp.company} logo`}
-                                    fill
-                                    className="object-contain"
-                                    sizes="(max-width: 768px) 100vw, 600px"
-                                />
-                            </div>
-                            {exp.mentorPortfolio && (
-                                <p className="text-sm mt-2">
-                                    Guided by:{" "}
-                                    <a href={exp.mentorPortfolio} target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:underline">
-                                        View Mentor's Portfolio
-                                    </a>
-                                </p>
-                            )}
-
-                            {/* Text below */}
-                            <div className="w-full text-center">
-                                <div className="flex justify-between items-center mb-2">
-                                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{exp.title}</h2>
-                                    <a
-                                        href={exp.website}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-gray-400 hover:text-blue-500"
-                                    >
-                                        <FaExternalLinkAlt size={18} />
-                                    </a>
+                            <div className="flex flex-col md:flex-row">
+                                {/* Left — Company image */}
+                                <div className="md:w-72 flex-shrink-0 bg-gray-800/60 flex items-center justify-center p-6">
+                                    <div className="relative w-full h-40 md:h-52">
+                                        <Image
+                                            src={exp.image}
+                                            alt={`${exp.company} logo`}
+                                            fill
+                                            className="object-contain"
+                                            sizes="(max-width: 768px) 100vw, 288px"
+                                        />
+                                    </div>
                                 </div>
-                                <h3 className="text-lg text-gray-500 dark:text-gray-400 text-left md:text-center">{exp.company}</h3>
-                                <p className="text-gray-700 dark:text-gray-300 mt-3 text-left">{exp.description}</p>
-                                <p className="text-sm text-gray-400 mt-4 text-left">Last Updated: {exp.updatedDate}</p>
+
+                                {/* Right — Content */}
+                                <div className="flex-1 p-8">
+                                    {/* Status badge + role */}
+                                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                                        <span className={`text-xs font-semibold px-3 py-1 rounded-full ${exp.employment_status === 'Currently working' ? 'badge-active' : 'badge-past'}`}>
+                                            {exp.employment_status === 'Currently working' ? '● Currently Working' : '○ Previously Worked'}
+                                        </span>
+                                    </div>
+
+                                    {/* Title & link */}
+                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                        <h3 className="text-xl font-bold text-white">{exp.title}</h3>
+                                        <a
+                                            href={exp.website}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-shrink-0 text-gray-500 hover:text-indigo-400 transition-colors duration-200 mt-1"
+                                        >
+                                            <FaExternalLinkAlt size={15} />
+                                        </a>
+                                    </div>
+
+                                    {/* Company name */}
+                                    <p className="text-indigo-400 font-semibold mb-4 flex items-center gap-2">
+                                        <FaBriefcase size={13} className="text-indigo-500" />
+                                        {exp.company}
+                                    </p>
+
+                                    {/* Description */}
+                                    <p className="text-gray-400 leading-relaxed mb-4 text-sm">{exp.description}</p>
+
+                                    {/* Footer */}
+                                    <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/5">
+                                        {exp.mentorPortfolio && (
+                                            <p className="text-sm text-gray-500">
+                                                Guided by:{" "}
+                                                <a href={exp.mentorPortfolio} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
+                                                    View Mentor's Portfolio
+                                                </a>
+                                            </p>
+                                        )}
+                                        <p className="text-xs text-gray-600 ml-auto">Updated: {exp.updatedDate}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}

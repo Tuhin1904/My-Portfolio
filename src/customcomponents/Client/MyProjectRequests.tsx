@@ -2,20 +2,12 @@
 import { apiRequest } from '@/apiFiles/apiClient'
 import { apiEndpoints } from '@/apiFiles/apiEndpoints'
 import React, { useEffect, useState } from 'react'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import SkeletonTable from '@/customcomponents/SkeletonTable';
-import { getLabel } from '@/const/masterData';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import PaginationComp from '../Pagination/Pagination';
+import SkeletonTable from '@/customcomponents/SkeletonTable'
+import { getLabel } from '@/const/masterData'
+import { useRouter } from 'next/navigation'
+import PaginationComp from '../Pagination/Pagination'
+import { FaExternalLinkAlt } from 'react-icons/fa'
+import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react'
 
 type Inquiry = {
     _id: string;
@@ -27,90 +19,145 @@ type Inquiry = {
     message: string;
 };
 
+const mobileColumns = ["Work Type", "Budget", "Email", "Message", "Actions"];
+
 const MyProjectRequests = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [projects, setProjects] = useState<Inquiry[]>([]);
     const ITEMS_PER_PAGE = 5;
     const [currentPage, setCurrentPage] = useState(1);
+    const [mobileColIndex, setMobileColIndex] = useState(0);
 
     const getMyProjects = async () => {
         try {
             setLoading(true);
-            const res = await apiRequest({
-                method: "GET",
-                url: apiEndpoints.getMyQueries
-            })
-            // console.log("My projects are :", res?.data)
-            setProjects(res?.data || [])
+            const res = await apiRequest({ method: "GET", url: apiEndpoints.getMyQueries });
+            setProjects(res?.data || []);
         } catch (err) {
-            console.log("Error is :", err)
+            console.log("Error:", err);
         } finally {
             setLoading(false);
         }
     }
 
-    useEffect(() => {
-        getMyProjects();
-    }, [])
+    useEffect(() => { getMyProjects(); }, []);
 
     const totalPages = Math.ceil(projects.length / ITEMS_PER_PAGE);
-
-    const paginatedProjects = projects.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
-    );
+    const paginatedProjects = projects.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
-        <div className="p-1 sm:p-6">
-            <h2 className="text-2xl font-semibold mb-4">My Project Enquiries</h2>
-
-            <div className="border rounded-lg overflow-hidden max-w-md sm:max-w-full">
-                <div className="w-full overflow-x-auto">
-                    <Table className='bg-white'>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Work Type</TableHead>
-                                <TableHead>Budget</TableHead>
-                                {/* <TableHead>User Type</TableHead> */}
-                                <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Message</TableHead>
-                                <TableHead>Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        {loading ? <SkeletonTable /> : <TableBody>
-                            {paginatedProjects.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="text-center py-6">
-                                        No data found
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                paginatedProjects.map((item) => (
-                                    <TableRow key={item._id}>
-                                        <TableCell >
-                                            <span className="text-xs px-2 py-1 rounded-sm">
-                                                {getLabel(item.workType)}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>{item.budget}</TableCell>
-                                        {/* <TableCell>{item.typeOfUser}</TableCell> */}
-                                        <TableCell>{item.name}</TableCell>
-                                        <TableCell>{item.email}</TableCell>
-                                        <TableCell className="max-w-[250px] truncate">
-                                            {item.message}
-                                        </TableCell>
-                                        <TableCell className="max-w-[250px] truncate">
-                                            <Button className='cursor-pointer hover:bg-gray-700 transition-all duration-200' onClick={() => router.push(`/my-project-requests/${item._id}`)}>View Status</Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>}
-                    </Table>
+        <div className="space-y-6">
+            {/* Heading row */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <p className="text-indigo-400 text-xs font-semibold uppercase tracking-widest mb-1">Dashboard</p>
+                    <h1 className="text-2xl font-bold text-white">My Enquiries</h1>
                 </div>
-                <PaginationComp currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+                <button
+                    onClick={() => router.push('/create-project')}
+                    className="shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
+                >
+                    <PlusCircle size={15} />
+                    New Request
+                </button>
+            </div>
+
+            {/* Table card */}
+            <div className="glass-card rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="border-b border-white/5">
+                                <th className="text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold">Name</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}`}>Work Type</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>Budget</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>Email</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>Message</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>Actions</th>
+                            </tr>
+                        </thead>
+                        {loading ? (
+                            <SkeletonTable />
+                        ) : (
+                            <tbody>
+                                {paginatedProjects.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="text-center py-16 text-gray-600">
+                                            <div className="flex flex-col items-center gap-3">
+                                                <span className="text-4xl">📭</span>
+                                                <span className="text-sm">No enquiries yet</span>
+                                                <button
+                                                    onClick={() => router.push('/create-project')}
+                                                    className="mt-1 text-xs text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg transition-all hover:bg-indigo-500/10 cursor-pointer"
+                                                >
+                                                    + Create your first request
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    paginatedProjects.map((item, idx) => (
+                                        <tr key={item._id}
+                                            className={`border-b border-white/5 transition-colors duration-150 hover:bg-white/3 ${idx % 2 === 0 ? '' : 'bg-white/[0.02]'}`}>
+                                            <td className="px-5 py-4 text-white font-medium">{item.name}</td>
+                                            <td className={`px-5 py-4 ${mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <span className="text-xs px-2.5 py-1 rounded-full font-medium"
+                                                    style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)', color: '#a5b4fc' }}>
+                                                    {getLabel(item.workType)}
+                                                </span>
+                                            </td>
+                                            <td className={`px-5 py-4 text-gray-400 ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>{item.budget}</td>
+                                            <td className={`px-5 py-4 text-gray-400 text-xs ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>{item.email}</td>
+                                            <td className={`px-5 py-4 max-w-[200px] truncate text-gray-400 text-xs ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>{item.message}</td>
+                                            <td className={`px-5 py-4 ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <button
+                                                    onClick={() => router.push(`/my-project-requests/${item._id}`)}
+                                                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer hover:bg-indigo-500/10"
+                                                >
+                                                    View <FaExternalLinkAlt size={10} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        )}
+                    </table>
+                </div>
+
+                {/* Mobile Column Navigator */}
+                <div className="flex md:hidden justify-between items-center px-5 py-3 border-t border-white/5">
+                    <button
+                        onClick={() => setMobileColIndex(i => Math.max(0, i - 1))}
+                        disabled={mobileColIndex === 0}
+                        className="text-gray-500 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+                    >
+                        <ChevronLeft size={18} />
+                    </button>
+                    <div className="flex gap-2 items-center">
+                        {mobileColumns.map((label, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setMobileColIndex(idx)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${mobileColIndex === idx ? "scale-125" : "bg-gray-700 hover:bg-gray-500"}`}
+                                style={mobileColIndex === idx ? { background: 'linear-gradient(135deg, #6366f1, #a855f7)' } : {}}
+                                aria-label={`Show ${label}`}
+                            />
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => setMobileColIndex(i => Math.min(mobileColumns.length - 1, i + 1))}
+                        disabled={mobileColIndex === mobileColumns.length - 1}
+                        className="text-gray-500 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+                    >
+                        <ChevronRight size={18} />
+                    </button>
+                </div>
+
+                <div className="border-t border-white/5 px-5 py-3">
+                    <PaginationComp currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+                </div>
             </div>
         </div>
     )

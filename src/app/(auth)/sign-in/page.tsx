@@ -2,7 +2,6 @@
 import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
 import ButtonSpinner from '@/customcomponents/Loading/ButtonSpinner';
-import useGuestOnly from '@/hooks/useGuestOnly';
 import { RootState } from '@/store';
 import { setTokens } from '@/store/slices/AuthSlice';
 import { setProfilePic, setUser } from '@/store/slices/UserInfo';
@@ -12,6 +11,8 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import { registerFcmToken } from '@/lib/fcm';
+import Link from 'next/link';
 
 type FormValues = {
     email: string;
@@ -23,7 +24,6 @@ const page = () => {
         () => localStorage.getItem("rememberMe") === "true"
     );
     const token = useSelector((state: RootState) => state.auth.accessToken);
-    // const user = useSelector((state:RootState) => state)
 
     useEffect(() => {
         if (token) {
@@ -33,8 +33,6 @@ const page = () => {
 
     const router = useRouter();
     const dispatch = useDispatch();
-
-    // const { isGuest } = useGuestOnly();
 
     const {
         register,
@@ -62,8 +60,6 @@ const page = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // if (!isGuest) return <></>;
-
     const onSubmit = async (data: FormValues) => {
         try {
             const remember = localStorage.getItem("rememberMe") === "true";
@@ -73,9 +69,7 @@ const page = () => {
                     method: "POST",
                     body: JSON.stringify(data),
                 });
-
                 const { encrypted } = await res.json();
-
                 localStorage.setItem("authData", encrypted);
             }
 
@@ -85,8 +79,6 @@ const page = () => {
                 url: apiEndpoints.signIn,
                 data
             })
-
-            console.log("Login Res is :", res)
 
             dispatch(setTokens({
                 accessToken: res.data?.accessToken, refreshToken: res.data?.refreshToken
@@ -104,135 +96,145 @@ const page = () => {
                 router.push("/view-clients-req")
             }
 
+            await registerFcmToken();
             toast("Welcome!")
 
-        } catch (err) {
-            console.log("Error :", err)
+        } catch (err: any) {
+            toast.error(err?.message || "Incorrect Email or Password")
         } finally {
             setLoading(false);
         }
-
     };
 
-
     return (
-        <div className=' min-h-[40vh] md:min-h-[70vh] flex justify-center items-center py-4 px-2'>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-md bg-white p-8 rounded-lg shadow-sm border flex flex-col gap-1.5"
-            >
-                <h2 className="text-2xl font-semibold text-center mb-6">
-                    Login
-                </h2>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 relative overflow-hidden">
 
-                {/* Email */}
-                <input
-                    type="email"
-                    placeholder="Enter your email"
-                    {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                            value: /^\S+@\S+$/i,
-                            message: "Invalid email",
-                        },
-                    })}
-                    className={`w-full border rounded-md px-4 py-3 mb-1 outline-none focus:ring-2 ${errors.email
-                        ? "border-red-500 focus:ring-red-500"
-                        : "focus:ring-gray-500"
-                        }`}
-                />
-                {errors.email && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.email.message}
-                    </p>
-                )}
+            {/* Background blobs */}
+            <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+            {/* Dot grid */}
+            <div className="absolute inset-0 dot-grid-bg opacity-40 pointer-events-none" />
 
-                {/* Password */}
-                <div className="relative">
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                                value: 6,
-                                message: "Minimum 6 characters",
-                            },
-                        })}
-                        className={`w-full border rounded-md px-4 py-3 mb-1 outline-none focus:ring-2 ${errors.password
-                            ? "border-red-500 focus:ring-red-500"
-                            : "focus:ring-gray-500"
-                            }`}
-                    />
+            <div className="relative w-full max-w-md">
 
-                    {/* Eye Button */}
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-3 top-3 text-gray-500 cursor-pointer"
-                    >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
+                {/* Logo / Brand */}
+                <div className="text-center mb-8">
+                    <Link href="/" className="inline-flex flex-col items-center gap-3 group">
+                        {/* <div
+                            className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white pulse-glow"
+                            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}
+                        >
+                            TG
+                        </div> */}
+                        {/* <span className="text-gray-500 text-sm group-hover:text-gray-400 transition-colors">← Back to portfolio</span> */}
+                    </Link>
+                    <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
+                    <p className="text-gray-500 text-sm">Sign in to your account to continue</p>
                 </div>
 
-                {errors.password && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.password.message}
-                    </p>
-                )}
+                {/* Card */}
+                <div className="glass-card rounded-2xl p-8"
+                    style={{ border: '1px solid rgba(99,102,241,0.2)' }}>
 
-                {/* Remember Me */}
-                <div className="flex items-center justify-between mt-2 mb-3 px-1">
-                    <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={rememberMe}
-                            onChange={(e) => {
-                                const value = e.target.checked;
-                                setRememberMe(value);
-                                localStorage.setItem("rememberMe", String(value));
-                            }}
-                            className="w-4 h-4 accent-gray-900 cursor-pointer"
-                        />
-                        Remember me
-                    </label>
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
-                    <span
-                        className="text-sm text-gray-500 cursor-pointer hover:underline"
-                        onClick={() => router.push("/forgot-password")}
-                    >
-                        Forgot password?
-                    </span>
+                        {/* Email */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Email address</label>
+                            <input
+                                type="email"
+                                placeholder="you@example.com"
+                                {...register("email", {
+                                    required: "Email is required",
+                                    pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+                                })}
+                                className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.email ? "border-red-500/60" : "border-white/8"}`}
+                            />
+                            {errors.email && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>
+                            )}
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    {...register("password", {
+                                        required: "Password is required",
+                                        minLength: { value: 6, message: "Minimum 6 characters" },
+                                    })}
+                                    className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 pr-11 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.password ? "border-red-500/60" : "border-white/8"}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors cursor-pointer"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            {errors.password && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>
+                            )}
+                        </div>
+
+                        {/* Remember me + Forgot password */}
+                        <div className="flex items-center justify-between">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                                <input
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => {
+                                        const value = e.target.checked;
+                                        setRememberMe(value);
+                                        localStorage.setItem("rememberMe", String(value));
+                                    }}
+                                    className="w-4 h-4 rounded accent-indigo-500 cursor-pointer"
+                                />
+                                <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">Remember me</span>
+                            </label>
+                            <button
+                                type="button"
+                                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+                                onClick={() => router.push("/forgot-password")}
+                            >
+                                Forgot password?
+                            </button>
+                        </div>
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? <ButtonSpinner text="Signing in..." /> : "Sign In"}
+                        </button>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-3">
+                            <div className="flex-1 h-px bg-white/8" />
+                            <span className="text-gray-600 text-xs uppercase tracking-widest">or</span>
+                            <div className="flex-1 h-px bg-white/8" />
+                        </div>
+
+                        {/* Sign up */}
+                        <p className="text-center text-sm text-gray-500">
+                            Don't have an account?{" "}
+                            <button
+                                type="button"
+                                className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors cursor-pointer"
+                                onClick={() => router.push("/sign-up")}
+                            >
+                                Sign Up
+                            </button>
+                        </p>
+                    </form>
                 </div>
-
-                {/* Submit */}
-                <button
-                    type="submit"
-                    className="w-full bg-gray-900 text-white py-3 rounded-md font-medium hover:bg-gray-700 transition cursor-pointer mt-2"
-                >
-                    {loading ? <ButtonSpinner text="Please wait..." /> : "Continue"}
-                </button>
-
-                {/* Divider */}
-                <div className="flex items-center my-6">
-                    <div className="flex-1 h-px bg-gray-300" />
-                    <span className="mx-3 text-gray-500 text-sm">or</span>
-                    <div className="flex-1 h-px bg-gray-300" />
-                </div>
-
-                {/* Sign Up */}
-                <p className="text-center text-sm text-gray-500 mt-6">
-                    Don't have an TG account?
-                </p>
-
-                <button
-                    type="button"
-                    className="w-full border border-gray-600 text-gray-600 py-2 rounded-md mt-3 hover:bg-gray-50 transition cursor-pointer"
-                    onClick={() => router.push("/sign-up")}
-                >
-                    Sign Up
-                </button>
-            </form>
+            </div>
         </div>
     )
 }

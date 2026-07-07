@@ -1,12 +1,5 @@
-import React from 'react'
-import AboutEducation from '../../customcomponents/AboutEducation'
+import { redirect } from 'next/navigation'
 
-const page = () => {
-    return (
-        <>
-            <AboutEducation />
-        </>
-    )
+export default function AboutPage() {
+    redirect('/')
 }
-
-export default page
