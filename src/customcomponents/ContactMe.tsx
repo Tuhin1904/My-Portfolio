@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
-import { removeHighlight, triggerHighlight } from "@/store/slices/UiSlice";
-import { useDispatch } from "react-redux";
 import { FaEnvelope, FaArrowRight } from "react-icons/fa";
 
 // Validation Schema
@@ -22,12 +20,12 @@ const schema = yup.object().shape({
 export default function ContactSection() {
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
+    const [isBlinking, setIsBlinking] = useState(false);
+    const sendButtonRef = useRef<HTMLButtonElement>(null);
 
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
     const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-    const dispatch = useDispatch();
 
     const {
         register,
@@ -84,11 +82,11 @@ export default function ContactSection() {
                         </div>
                         <button
                             onClick={() => {
-                                window.scrollTo({ top: 0, behavior: "smooth" });
+                                sendButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                                setIsBlinking(true);
                                 setTimeout(() => {
-                                    dispatch(triggerHighlight());
-                                    setTimeout(() => { dispatch(removeHighlight()); }, 1500);
-                                }, 300);
+                                    setIsBlinking(false);
+                                }, 2000);
                             }}
                             className="shimmer-btn text-white px-8 py-4 rounded-xl font-semibold text-sm flex items-center gap-2 flex-shrink-0 group"
                         >
@@ -136,9 +134,10 @@ export default function ContactSection() {
                         </div>
 
                         <button
+                            ref={sendButtonRef}
                             type="submit"
                             disabled={loading}
-                            className={`shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            className={`shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} ${isBlinking ? 'blink-highlight' : ''}`}
                         >
                             {loading ? "Sending..." : "Send Message"}
                             {!loading && <FaArrowRight />}

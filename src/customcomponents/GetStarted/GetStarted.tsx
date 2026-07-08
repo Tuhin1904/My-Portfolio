@@ -66,7 +66,7 @@ export default function StartProjectDialog() {
     }
   };
 
-  const highlight = useSelector((state: any) => state.ui.highlightStartButton);
+  // const highlight = useSelector((state: any) => state.ui.highlightStartButton);
 
   return (
     <Dialog open={open} onOpenChange={(val) => {
@@ -75,7 +75,8 @@ export default function StartProjectDialog() {
     }}>
       <DialogTrigger asChild>
         <button
-          className={`shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold tracking-wide flex items-center gap-2 group transition-all ${highlight ? "blink-highlight" : ""} cursor-pointer`}
+          className={`shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold tracking-wide flex items-center gap-2 group transition-all  cursor-pointer`}
+        // ${highlight ? "blink-highlight" : ""}
         >
           Get Started
           <FaArrowRight className="group-hover:translate-x-0.5 transition-transform duration-200 text-xs" />

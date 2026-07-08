@@ -190,22 +190,23 @@ body {
 
 
 .blink-highlight {
-  animation: blink 0.5s ease-in-out 3;
+  animation: blink 0.5s ease-in-out 4 !important;
+  background-image: none !important;
 }
 
 @keyframes blink {
   0% {
-    background-color: white;
-    color: black;
+    background-color: #6366f1;
+    color: white;
   }
   50% {
-    background-color: #d53312;
+    background-color: #c084fc;
     color: white;
-    color: black;
+    box-shadow: 0 0 20px #a855f7;
   }
   100% {
-    background-color: white;
-    color: black;
+    background-color: #6366f1;
+    color: white;
   }
 }
 
