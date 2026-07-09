@@ -10,6 +10,7 @@ import useAuthChecker from "@/hooks/useAuthChecker";
 import LogoutButton from "../../customcomponents/LogoutConfirm";
 import Image from "next/image";
 import { toggleTheme } from "@/store/slices/ThemeSlice";
+import NotificationBell from "@/customcomponents/NotificationBell";
 
 export default function DashboardLayout({
     children,
@@ -134,6 +135,7 @@ export default function DashboardLayout({
                     </div>
 
                     <div className="flex items-center gap-4 ms-auto">
+                        <NotificationBell align="right" />
                         <button
                             onClick={() => dispatch(toggleTheme())}
                             className="text-gray-500 hover:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200 cursor-pointer p-1.5 rounded-lg hover:bg-white/5 flex items-center justify-center"

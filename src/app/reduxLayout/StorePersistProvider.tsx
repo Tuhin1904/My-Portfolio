@@ -8,8 +8,8 @@ import { Toaster } from "@/components/ui/sonner"
 import { useEffect } from "react";
 import { apiRequest } from "@/apiFiles/apiClient";
 import { apiEndpoints } from "@/apiFiles/apiEndpoints";
-import { subscribeToForegroundMessages } from "@/lib/fcm";
 import { toast } from "sonner";
+import FCMRegister from "@/components/FCMRegister";
 
 export default function StorePersistProvider({
     children,
@@ -61,40 +61,13 @@ export default function StorePersistProvider({
         onLoad();
     }, []);
 
-    // Mount foreground FCM listener once on app boot.
-    // Shows a toast when a push notification arrives while the tab is active.
-    useEffect(() => {
-        let unsubscribe: (() => void) | null = null;
 
-        subscribeToForegroundMessages((payload) => {
-            const title = payload.notification?.title || 'New Notification';
-            const body = payload.notification?.body || '';
-            const conversationId = payload.data?.conversationId;
-
-            toast(title, {
-                description: body,
-                action: conversationId
-                    ? {
-                          label: 'View',
-                          onClick: () => {
-                              window.location.href = `/chat/${conversationId}`;
-                          },
-                      }
-                    : undefined,
-            });
-        }).then((fn) => {
-            unsubscribe = fn;
-        });
-
-        return () => {
-            unsubscribe?.();
-        };
-    }, []);
 
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <Toaster />
+                <FCMRegister />
                 {children}
             </PersistGate>
         </Provider>

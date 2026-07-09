@@ -9,12 +9,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-com
 // These must match the values in your .env file.
 // ──────────────────────────────────────────────────────────────────────────────
 firebase.initializeApp({
-  apiKey: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_API_KEY',
-  authDomain: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  projectId: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-  storageBucket: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-  messagingSenderId: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  appId: 'REPLACE_WITH_NEXT_PUBLIC_FIREBASE_APP_ID',
+  apiKey: 'AIzaSyBJvoeOmKg8gDOIGassAIzMcHhSuPiTLXo',
+  authDomain: 'portfolio-manage-ca3b7.firebaseapp.com',
+  projectId: 'portfolio-manage-ca3b7',
+  storageBucket: 'portfolio-manage-ca3b7.firebasestorage.app',
+  messagingSenderId: '349641315351',
+  appId: '1:349641315351:web:3a7484f6a556597ca97852',
 });
 
 const messaging = firebase.messaging();

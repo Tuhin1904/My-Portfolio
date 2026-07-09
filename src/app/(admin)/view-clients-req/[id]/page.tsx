@@ -2,8 +2,6 @@
 
 import { apiRequest } from "@/apiFiles/apiClient";
 import { apiEndpoints } from "@/apiFiles/apiEndpoints";
-import { store } from "@/store";
-import { io, Socket } from "socket.io-client";
 import {
     Select,
     SelectContent,
@@ -17,12 +15,9 @@ import {
     TERMINAL_STATUS,
 } from "@/const/milestones";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getLabel } from "@/const/masterData";
 import { ChevronUp, ChevronDown, ChevronLeft, Calendar, User, Briefcase, Mail, DollarSign, MessageSquare, ShieldAlert } from "lucide-react";
-import ChatBox from "@/customcomponents/Chat/ChatBox";
-
-const BACKEND_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api").replace(/\/api$/, "");
 
 const page = () => {
     const route = useRouter();
@@ -30,38 +25,28 @@ const page = () => {
     const [data, setData] = useState<any>(null);
     const [status, setStatus] = useState("");
     const [chatReq, setChatReq] = useState<any>(null);
+    const [pendingRequests, setPendingRequests] = useState<any[]>([]);
     const [isChatPopupOpen, setIsChatPopupOpen] = useState(false);
-    const [socket, setSocket] = useState<Socket | null>(null);
 
-    const socketRef = useRef<Socket | null>(null);
+    const getPendingRequests = async () => {
+        try {
+            const res = await apiRequest({
+                method: "GET",
+                url: apiEndpoints.viewPendingChatRequests(id as string),
+            });
+            setPendingRequests(res?.data || []);
+        } catch (error) {
+            console.error("Error fetching pending requests", error);
+        }
+    };
 
     const getChatReqStatus = async (userId: string) => {
         try {
             const res = await apiRequest({
                 method: "GET",
-                url: apiEndpoints.viewChatrequestOfUser(userId),
+                url: apiEndpoints.viewChatrequestOfUser(userId, id as string),
             });
             setChatReq(res?.data);
-
-            if (res?.data?.status === "accepted") {
-                const conversationId =
-                    res?.data?.conversation?._id ||
-                    res?.data?.conversationId ||
-                    res?.data?._id;
-
-                if (conversationId && !socketRef.current) {
-                    const token = store.getState().auth.accessToken;
-                    const newSocket = io(BACKEND_URL, { auth: { token } });
-
-                    newSocket.on("joined", (d) => {
-                        console.log("[Admin] Joined conversation:", d.conversationId);
-                    });
-
-                    newSocket.emit("join_conversation", { conversationId });
-                    socketRef.current = newSocket;
-                    setSocket(newSocket);
-                }
-            }
         } catch (error) {
             console.error("Error fetching chat req status", error);
         }
@@ -72,7 +57,7 @@ const page = () => {
             method: "GET",
             url: `${apiEndpoints.getAllQueries}/${id}`,
         });
-        setStatus(res?.status);
+        setStatus(res?.data?.status || "");
         setData(res?.data || null);
 
         if (res?.data?.userId) {
@@ -81,28 +66,24 @@ const page = () => {
     };
 
     useEffect(() => {
-        if (id) getQuery();
+        if (id) {
+            getQuery();
+            getPendingRequests();
+        }
     }, [id]);
-
-    useEffect(() => {
-        return () => {
-            if (socketRef.current) {
-                socketRef.current.disconnect();
-                socketRef.current = null;
-            }
-        };
-    }, []);
 
     const getAllowedStatuses = () => {
         if (!status) return [];
         if (TERMINAL_STATUS.includes(status)) return [status];
 
         const currentIndex = STATUS_FLOW.indexOf(status);
-        return [
+        const allowed = [
             STATUS_FLOW[currentIndex],
             STATUS_FLOW[currentIndex + 1],
             ...TERMINAL_STATUS,
         ].filter(Boolean);
+
+        return allowed.filter(s => s === status || (s !== "accepted_by_client" && s !== "delivered"));
     };
 
     const handleStatusChange = async (value: string) => {
@@ -110,8 +91,8 @@ const page = () => {
         try {
             // Update status API
             await apiRequest({
-                method: "PUT",
-                url: `${apiEndpoints.getAllQueries}/${id}`,
+                method: "POST",
+                url: apiEndpoints.updateQuery(id as string),
                 data: { status: value },
             });
         } catch (error) {
@@ -123,41 +104,14 @@ const page = () => {
         if (!chatReq?.request?._id) return console.error("Chat Request id not found");
         try {
             const actionStr = actionStatus === "accepted" ? "accept" : "reject";
-            const res = await apiRequest({
+            await apiRequest({
                 method: "POST",
                 url: apiEndpoints.chatReqRespond(chatReq?.request?._id),
                 data: { action: actionStr },
             });
 
-            const conversationId = res?.data?.conversation?._id ?? null;
-            console.log("[Admin] Chat respond result:", res, "conversationId:", conversationId);
-
-            if (actionStr === "accept" && conversationId) {
-                const token = store.getState().auth.accessToken;
-
-                if (socketRef.current) {
-                    socketRef.current.disconnect();
-                    socketRef.current = null;
-                    setSocket(null);
-                }
-
-                const newSocket = io(BACKEND_URL, { auth: { token } });
-
-                newSocket.on("joined", (d) => {
-                    console.log("[Admin] Joined conversation:", d.conversationId);
-                    newSocket.emit("send_message", {
-                        conversationId,
-                        content: "Hello, how can I help you today?",
-                    });
-                });
-
-                newSocket.emit("join_conversation", { conversationId });
-
-                socketRef.current = newSocket;
-                setSocket(newSocket);
-            }
-
             if (data?.userId) getChatReqStatus(data.userId);
+            getPendingRequests();
         } catch (error) {
             console.error("Error updating chat request", error);
         }
@@ -270,7 +224,7 @@ const page = () => {
                                             {/* Stepper node circle */}
                                             <div className={`absolute -left-[21px] w-[11px] h-[11px] rounded-full border-2 transition-all duration-300 z-10
                                                 ${isActive ? 'bg-indigo-500 border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-gray-900 border-gray-700'}`} />
-                                            
+
                                             <div className="min-w-0">
                                                 <p className={`text-xs font-semibold uppercase tracking-wider transition-colors
                                                     ${isCurrent ? 'text-indigo-400' : isActive ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -313,10 +267,9 @@ const page = () => {
 
             {/* Chat Request Popup Widget */}
             {chatReq && (
-                <div className={`fixed bottom-0 right-4 w-[330px] glass-card shadow-2xl rounded-t-2xl border transition-all duration-300 z-50 overflow-hidden ${
-                    isChatPopupOpen ? "translate-y-0" : "translate-y-[calc(100%-48px)]"
-                }`} style={{ border: '1px solid rgba(99,102,241,0.25)', background: 'rgba(15,15,26,0.95)', backdropFilter: 'blur(16px)' }}>
-                    
+                <div className={`fixed bottom-0 right-4 w-[330px] glass-card shadow-2xl rounded-t-2xl border transition-all duration-300 z-50 overflow-hidden ${isChatPopupOpen ? "translate-y-0" : "translate-y-[calc(100%-48px)]"
+                    }`} style={{ border: '1px solid rgba(99,102,241,0.25)', background: 'rgba(15,15,26,0.95)', backdropFilter: 'blur(16px)' }}>
+
                     {/* Header */}
                     <div
                         className="flex items-center justify-between px-4 py-3 cursor-pointer bg-white/[0.02] border-b border-white/5 transition-colors hover:bg-white/[0.04]"
@@ -356,19 +309,26 @@ const page = () => {
                             )}
                         </div>
 
-                        {chatReq.status === "accepted" ? (
-                            <div className="border border-white/5 rounded-xl min-h-[280px] flex flex-col bg-white/[0.01] overflow-hidden">
-                                <ChatBox
-                                    socket={socket}
-                                    conversationId={conversationId}
-                                    currentUserType="admin"
-                                />
-                            </div>
-                        ) : (
+                        {chatReq.status === "pending" ? (
                             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
                                 <ShieldAlert size={28} className="text-gray-600" />
                                 <p className="text-xs text-gray-500 max-w-[200px]">
-                                    {chatReq.status === "pending" ? "Accept the chat request to begin communicating with this client." : "This chat request has been rejected."}
+                                    Accept the chat request to begin communicating with this client.
+                                </p>
+                            </div>
+                        ) : chatReq.status === "accepted" ? (
+                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-center border border-white/5 rounded-xl bg-white/[0.01] min-h-[280px]">
+                                <MessageSquare size={36} className="text-indigo-400 animate-pulse" />
+                                <p className="text-sm font-semibold text-white">Chat coming soon</p>
+                                <p className="text-xs text-gray-500 max-w-[200px]">
+                                    Live chat consultation feature will be available in a future update.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-10 gap-3 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
+                                <ShieldAlert size={28} className="text-red-400" />
+                                <p className="text-xs text-gray-500 max-w-[200px]">
+                                    The chat request was rejected.
                                 </p>
                             </div>
                         )}

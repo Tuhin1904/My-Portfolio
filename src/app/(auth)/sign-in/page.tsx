@@ -1,6 +1,7 @@
 'use client'
 import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
+import { requestForToken } from '@/lib/fcm';
 import ButtonSpinner from '@/customcomponents/Loading/ButtonSpinner';
 import { RootState } from '@/store';
 import { setTokens } from '@/store/slices/AuthSlice';
@@ -11,7 +12,6 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
-import { registerFcmToken } from '@/lib/fcm';
 import Link from 'next/link';
 
 type FormValues = {
@@ -73,11 +73,19 @@ const page = () => {
                 localStorage.setItem("authData", encrypted);
             }
 
+            let fcmToken = '';
+            try {
+                const token = await requestForToken();
+                if (token) fcmToken = token;
+            } catch (fcmErr) {
+                console.error("FCM Token retrieval failed:", fcmErr);
+            }
+
             setLoading(true);
             const res = await apiRequest({
                 method: "POST",
                 url: apiEndpoints.signIn,
-                data
+                data: { ...data, fcmToken }
             })
 
             dispatch(setTokens({
@@ -96,7 +104,6 @@ const page = () => {
                 router.push("/view-clients-req")
             }
 
-            await registerFcmToken();
             toast("Welcome!")
 
         } catch (err: any) {

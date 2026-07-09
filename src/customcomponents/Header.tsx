@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 const MobileMenu = dynamic(() => import('./MobileMenu'));
 const GetStarted = dynamic(() => import('./GetStarted/GetStarted'));
+import NotificationBell from './NotificationBell';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { usePathname, useRouter } from 'next/navigation';
@@ -34,11 +35,10 @@ const Header = () => {
           <a
             key={link.title}
             href={link.href}
-            className={`relative py-1 transition-colors duration-200 hover:text-indigo-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:transition-all after:duration-300 ${
-              pathname === link.href
-                ? 'text-indigo-400 after:w-full after:bg-gradient-to-r after:from-indigo-500 after:to-violet-500'
-                : 'after:w-0 hover:after:w-full after:bg-gradient-to-r after:from-indigo-500 after:to-violet-500'
-            }`}>
+            className={`relative py-1 transition-colors duration-200 hover:text-indigo-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:transition-all after:duration-300 ${pathname === link.href
+              ? 'text-indigo-400 after:w-full after:bg-gradient-to-r after:from-indigo-500 after:to-violet-500'
+              : 'after:w-0 hover:after:w-full after:bg-gradient-to-r after:from-indigo-500 after:to-violet-500'
+              }`}>
             {link.title}
           </a>
         ))}
@@ -46,6 +46,7 @@ const Header = () => {
       {/* Mobile Menu Modal & Theme Toggle */}
       <div className='flex flex-1 md:hidden items-center gap-4'>
         <MobileMenu navLinks={navLinks} />
+        <NotificationBell align="left" />
         <button
           onClick={() => dispatch(toggleTheme())}
           className="text-gray-400 hover:text-indigo-400 transition-colors duration-200 cursor-pointer p-2 rounded-full"
@@ -80,6 +81,7 @@ const Header = () => {
 
       {/* Right Social Icons & Theme Toggle */}
       <div className='flex-1 hidden md:flex gap-5 text-2xl justify-end items-center'>
+        <NotificationBell align="right" />
         <button
           onClick={() => dispatch(toggleTheme())}
           className="text-gray-400 hover:text-indigo-400 transition-colors duration-200 cursor-pointer p-2 rounded-full hover:bg-white/5 flex items-center justify-center"

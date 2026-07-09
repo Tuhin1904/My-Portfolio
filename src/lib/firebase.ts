@@ -1,5 +1,6 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getMessaging, isSupported } from 'firebase/messaging';
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getMessaging, Messaging } from "firebase/messaging";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,17 +11,19 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Avoid re-initializing if app already exists (Next.js hot-reload safe)
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-/**
- * Returns the Firebase Messaging instance only in environments that support it.
- * (service workers + notification API must be available)
- */
-export const getFirebaseMessaging = async () => {
-  const supported = await isSupported();
-  if (!supported) return null;
-  return getMessaging(app);
-};
+const db = getFirestore(app);
 
-export default app;
+let messaging: Messaging | null = null;
+
+if (typeof window !== "undefined") {
+  try {
+    messaging = getMessaging(app);
+  } catch (err) {
+    console.warn("Failed to initialize Firebase Messaging on the client:", err);
+  }
+}
+
+export { app, messaging, db };

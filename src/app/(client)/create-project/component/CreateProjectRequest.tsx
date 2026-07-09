@@ -43,11 +43,12 @@ const CreateProjectRequest = () => {
     const onSubmit = async (data: FormValues) => {
         setLoading(true);
         try {
-            await apiRequest({ method: "POST", url: apiEndpoints.postRequest, data: { ...data, typeOfUser: "registered" } });
-            const reqstat = await apiRequest({ method: "GET", url: apiEndpoints.myReqStatus });
-            if (!reqstat?.data?.length) {
-                await apiRequest({ method: "POST", url: apiEndpoints.chatRequest, data: { ...data, typeOfUser: "registered" } });
-            }
+            const reqstat = await apiRequest({ method: "POST", url: apiEndpoints.postRequest, data: { ...data, typeOfUser: "registered" } });
+            // const reqstat = await apiRequest({ method: "GET", url: apiEndpoints.myReqStatus });
+            console.log("reqstat is :", reqstat)
+            // if (reqstat?.data?._id) {
+            //     await apiRequest({ method: "POST", url: apiEndpoints.chatRequest, data: { ...data, queryId: reqstat?.data?._id, typeOfUser: "registered" } });
+            // }
             toast("Request submitted successfully!");
             router.push("/my-project-requests");
         } catch (err) {
@@ -180,7 +181,7 @@ const CreateProjectRequest = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className={`shimmer-btn text-white px-8 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                    className={`shimmer-btn text-white px-8 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                                 >
                                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Send size={14} /> Submit Request</>}
                                 </button>

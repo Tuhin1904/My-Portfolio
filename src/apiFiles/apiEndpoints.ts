@@ -6,19 +6,19 @@ export const apiEndpoints = {
   pingRequest: "/ping",
   signUp: "/users/signup",
   signIn: "/users/signin",
-  registerForFCM: "/users/fcm-token", //POST
   uploadFile: "/file/upload",
   updateProfile: "/users/update-profile",
   refreshToken: "/users/refresh-token",
   chatRequest: "/chat/request",
   myReqStatus: "/chat/requests/my",
-  fcmToken: "/users/fcm-token",
+  updateFcmToken: "/users/fcm-token",
 
   // For user
-  viewMyChatrequestStat: "/chat/request/status",
+  viewMyChatrequestStat: (queryId: string) => `/chat/request/status?queryId=${queryId}`,
 
   // For admin
-  viewChatrequestOfUser: (id: string) => `/chat/request/status?userId=${id}`,
+  viewChatrequestOfUser: (userId: string, queryId: string) => `/chat/request/status?userId=${userId}&queryId=${queryId}`,
+  viewPendingChatRequests: (queryId: string) => `/chat/requests/pending?queryId=${queryId}`,
   chatReqRespond: (chatId: string) => `/chat/request/${chatId}/respond`,
 
   // Conversation

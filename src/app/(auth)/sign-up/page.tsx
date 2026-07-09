@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import Link from 'next/link';
+import ButtonSpinner from '@/customcomponents/Loading/ButtonSpinner';
 
 type FormValues = {
     email: string;
@@ -17,169 +19,172 @@ type FormValues = {
 
 const page = () => {
     const router = useRouter();
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>();
 
-    const [showPassword, setShowPassword] = useState(false);
-
     const onSubmit = async (data: FormValues) => {
         try {
+            setLoading(true);
             await apiRequest({
                 method: "POST",
                 url: apiEndpoints.signUp,
-                data: { ...data, userRole: 1 }
-            })
+                data: { ...data, userRole: 2 } // Registered Client user role is 2
+            });
 
-            toast("Login to continue")
-
-        } catch (err) {
-            console.log("Error", err)
-            toast("Sign up failed")
+            toast.success("Account created! Please sign in.");
+            router.push("/sign-in");
+        } catch (err: any) {
+            console.error("Sign up error:", err);
+            toast.error(err?.message || "Sign up failed");
+        } finally {
+            setLoading(false);
         }
-
     };
 
-    const inputStyle = (error: any) =>
-        `w-full border rounded-md px-4 py-3 mb-1 outline-none focus:ring-2 ${error ? "border-red-500 focus:ring-red-500" : "focus:ring-gray-500"
-        }`;
-
     return (
-        <div className="min-h-[50vh] md:min-h-[80vh] flex justify-center items-center">
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-md bg-white p-8 rounded-lg shadow-sm border flex flex-col gap-2"
-            >
-                <h2 className="text-2xl font-semibold text-center mb-6">
-                    Sign Up
-                </h2>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 relative overflow-hidden">
+            {/* Background blobs */}
+            <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+            {/* Dot grid */}
+            <div className="absolute inset-0 dot-grid-bg opacity-40 pointer-events-none" />
 
-                {/* Username */}
-                <input
-                    type="text"
-                    placeholder="Enter username"
-                    {...register("userName", { required: "Username is required" })}
-                    className={inputStyle(errors.userName)}
-                />
-                {errors.userName && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.userName.message}
-                    </p>
-                )}
-
-                {/* Email */}
-                <input
-                    type="email"
-                    placeholder="Enter your email"
-                    {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                            value: /^\S+@\S+$/i,
-                            message: "Invalid email",
-                        },
-                    })}
-                    className={inputStyle(errors.email)}
-                />
-                {errors.email && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.email.message}
-                    </p>
-                )}
-
-                {/* Phone */}
-                <input
-                    type="text"
-                    placeholder="Enter phone number"
-                    {...register("phone", {
-                        required: "Phone is required",
-                        minLength: {
-                            value: 8,
-                            message: "Invalid phone number",
-                        },
-                    })}
-                    className={inputStyle(errors.phone)}
-                />
-                {errors.phone && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.phone.message}
-                    </p>
-                )}
-
-                {/* Location */}
-                <input
-                    type="text"
-                    placeholder="Enter location"
-                    {...register("location", { required: "Location is required" })}
-                    className={inputStyle(errors.location)}
-                />
-                {errors.location && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.location.message}
-                    </p>
-                )}
-
-                {/* Password */}
-                <div className="relative">
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                                value: 8,
-                                message: "Minimum 8 characters",
-                            },
-                        })}
-                        className={inputStyle(errors.password)}
-                    />
-
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-3 top-3 text-gray-500"
-                    >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
+            <div className="relative w-full max-w-md z-10">
+                {/* Logo / Brand */}
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+                    <p className="text-gray-500 text-sm">Join to submit inquiries and track your projects</p>
                 </div>
 
-                {errors.password && (
-                    <p className="text-red-500 text-sm mb-3">
-                        {errors.password.message}
-                    </p>
-                )}
+                {/* Card */}
+                <div className="glass-card rounded-2xl p-8" style={{ border: '1px solid rgba(99,102,241,0.2)' }}>
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                        {/* Username */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Username</label>
+                            <input
+                                type="text"
+                                placeholder="johndoe"
+                                {...register("userName", { required: "Username is required" })}
+                                className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.userName ? "border-red-500/60" : "border-white/8"}`}
+                            />
+                            {errors.userName && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.userName.message}</p>
+                            )}
+                        </div>
 
-                {/* Submit */}
-                <button
-                    type="submit"
-                    className="w-full bg-gray-900 text-white py-3 rounded-md font-medium hover:bg-gray-700 transition mt-2 cursor-pointer"
-                >
-                    Create Account
-                </button>
+                        {/* Email */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Email Address</label>
+                            <input
+                                type="email"
+                                placeholder="you@example.com"
+                                {...register("email", {
+                                    required: "Email is required",
+                                    pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" },
+                                })}
+                                className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.email ? "border-red-500/60" : "border-white/8"}`}
+                            />
+                            {errors.email && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>
+                            )}
+                        </div>
 
-                {/* Divider */}
-                <div className="flex items-center my-6">
-                    <div className="flex-1 h-px bg-gray-300" />
-                    <span className="mx-3 text-gray-500 text-sm">or</span>
-                    <div className="flex-1 h-px bg-gray-300" />
+                        {/* Phone */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Phone Number</label>
+                            <input
+                                type="text"
+                                placeholder="123-456-7890"
+                                {...register("phone", {
+                                    required: "Phone number is required",
+                                    minLength: { value: 8, message: "Minimum 8 digits required" },
+                                })}
+                                className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.phone ? "border-red-500/60" : "border-white/8"}`}
+                            />
+                            {errors.phone && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.phone.message}</p>
+                            )}
+                        </div>
+
+                        {/* Location */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Location</label>
+                            <input
+                                type="text"
+                                placeholder="New York, USA"
+                                {...register("location", { required: "Location is required" })}
+                                className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.location ? "border-red-500/60" : "border-white/8"}`}
+                            />
+                            {errors.location && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.location.message}</p>
+                            )}
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1.5">Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    {...register("password", {
+                                        required: "Password is required",
+                                        minLength: { value: 8, message: "Minimum 8 characters" },
+                                    })}
+                                    className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 pr-11 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.password ? "border-red-500/60" : "border-white/8"}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors cursor-pointer"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            {errors.password && (
+                                <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>
+                            )}
+                        </div>
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all mt-2 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? <ButtonSpinner text="Creating account..." /> : "Create Account"}
+                        </button>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-3 mt-2">
+                            <div className="flex-1 h-px bg-white/8" />
+                            <span className="text-gray-600 text-xs uppercase tracking-widest">or</span>
+                            <div className="flex-1 h-px bg-white/8" />
+                        </div>
+
+                        {/* Sign in redirect */}
+                        <p className="text-center text-sm text-gray-500">
+                            Already have an account?{" "}
+                            <button
+                                type="button"
+                                className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors cursor-pointer"
+                                onClick={() => router.push("/sign-in")}
+                            >
+                                Sign In
+                            </button>
+                        </p>
+                    </form>
                 </div>
-
-                {/* Login Redirect */}
-                <p className="text-center text-sm text-gray-500">
-                    Already have an account?
-                </p>
-
-                <button
-                    type="button"
-                    onClick={() => router.push("/sign-in")}
-                    className="w-full border border-gray-600 text-gray-600 py-2 rounded-md mt-3 hover:bg-gray-50 transition cursor-pointer"
-                >
-                    Login
-                </button>
-            </form>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default page;

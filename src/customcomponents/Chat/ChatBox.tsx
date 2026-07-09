@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send } from 'lucide-react';
-import { Socket } from 'socket.io-client';
 import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
 
@@ -15,24 +14,18 @@ interface Message {
 }
 
 interface ChatBoxProps {
-  socket: Socket | null;
   conversationId: string;
   currentUserType: 'admin' | 'user';
 }
 
-const TYPING_DEBOUNCE_MS = 2000;
-
-const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
+const ChatBox = ({ conversationId, currentUserType }: ChatBoxProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [isOtherTyping, setIsOtherTyping] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isTypingRef = useRef(false);
   const prependingRef = useRef(false);
   const prevScrollHeightRef = useRef(0);
 
@@ -87,11 +80,7 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
-  // ─── Mark read on mount / socket ready ───────────────────────────────────
-  useEffect(() => {
-    if (!socket || !conversationId) return;
-    socket.emit('mark_read', { conversationId });
-  }, [socket, conversationId]);
+
 
   // ─── Restore scroll position after prepend ────────────────────────────────
   useEffect(() => {
@@ -109,48 +98,7 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
     }
   }, [messages]);
 
-  // ─── Socket event listeners ───────────────────────────────────────────────
-  useEffect(() => {
-    if (!socket) return;
 
-    const handleReceiveMessage = (data: any) => {
-      setMessages((prev) => {
-        if (prev.find((m) => m.id === data.id)) return prev;
-        return [
-          ...prev,
-          {
-            id: data.id || Math.random().toString(),
-            content: data.content,
-            senderType: data.senderType || (data.isAdmin ? 'admin' : 'user'),
-            timestamp: data.createdAt || new Date().toISOString(),
-            isRead: false,
-          },
-        ];
-      });
-      // Immediately acknowledge new messages
-      socket.emit('mark_read', { conversationId });
-    };
-
-    const handleUserTyping = (data: { isTyping: boolean }) => {
-      setIsOtherTyping(data.isTyping);
-    };
-
-    const handleMessageRead = () => {
-      setMessages((prev) =>
-        prev.map((m, i) => (i === prev.length - 1 ? { ...m, isRead: true } : m))
-      );
-    };
-
-    socket.on('receive_message', handleReceiveMessage);
-    socket.on('user_typing', handleUserTyping);
-    socket.on('message_read', handleMessageRead);
-
-    return () => {
-      socket.off('receive_message', handleReceiveMessage);
-      socket.off('user_typing', handleUserTyping);
-      socket.off('message_read', handleMessageRead);
-    };
-  }, [socket, conversationId]);
 
   // ─── Infinite scroll — load older pages on scroll to top ─────────────────
   const handleScroll = () => {
@@ -162,30 +110,13 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
     }
   };
 
-  // ─── Typing emission ──────────────────────────────────────────────────────
-  const emitTyping = (isTyping: boolean) => {
-    if (!socket || !conversationId) return;
-    socket.emit('typing', { conversationId, isTyping });
-    isTypingRef.current = isTyping;
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-
-    if (!isTypingRef.current) emitTyping(true);
-
-    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    typingTimerRef.current = setTimeout(() => {
-      emitTyping(false);
-    }, TYPING_DEBOUNCE_MS);
   };
 
   // ─── Send message ─────────────────────────────────────────────────────────
   const handleSendMessage = () => {
-    if (!inputValue.trim() || !socket) return;
-
-    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    emitTyping(false);
+    if (!inputValue.trim()) return;
 
     const tempId = Math.random().toString();
     const newMsg: Message = {
@@ -196,20 +127,12 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
     };
 
     setMessages((prev) => [...prev, newMsg]);
-    socket.emit('send_message', { conversationId, content: inputValue.trim(), tempId });
     setInputValue('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSendMessage();
   };
-
-  // ─── Cleanup typing timer on unmount ─────────────────────────────────────
-  useEffect(() => {
-    return () => {
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    };
-  }, []);
 
   return (
     <div className="flex flex-col h-full min-h-[300px] max-h-[400px] w-full bg-background overflow-hidden border rounded-md">
@@ -244,11 +167,10 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
               className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm shadow-sm ${
-                  isMe
+                className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm shadow-sm ${isMe
                     ? 'bg-primary text-primary-foreground rounded-br-sm'
                     : 'bg-muted text-foreground border rounded-bl-sm'
-                }`}
+                  }`}
               >
                 {msg.content}
                 {isMe && (
@@ -261,16 +183,7 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
           );
         })}
 
-        {/* Typing indicator */}
-        {isOtherTyping && (
-          <div className="flex justify-start">
-            <div className="bg-muted border text-foreground px-3 py-2 rounded-2xl rounded-bl-sm text-sm flex items-center gap-1">
-              <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:0ms]" />
-              <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:150ms]" />
-              <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:300ms]" />
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Input area */}
@@ -286,7 +199,7 @@ const ChatBox = ({ socket, conversationId, currentUserType }: ChatBoxProps) => {
           size="icon"
           className="h-9 w-9 shrink-0"
           onClick={handleSendMessage}
-          disabled={!inputValue.trim() || !socket}
+          disabled={!inputValue.trim()}
         >
           <Send className="h-4 w-4" />
         </Button>

@@ -1,79 +1,39 @@
-import { getToken, onMessage, Messaging } from 'firebase/messaging';
-import { getFirebaseMessaging } from './firebase';
-import { apiRequest } from '@/apiFiles/apiClient';
-import { apiEndpoints } from '@/apiFiles/apiEndpoints';
+import { getToken } from "firebase/messaging";
+import { messaging } from "./firebase";
 
-const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+export const requestForToken = async (): Promise<string | null> => {
+  if (typeof window === "undefined" || !("Notification" in window)) {
+    console.warn("Notifications not supported in this environment.");
+    return null;
+  }
 
-/**
- * Requests notification permission, obtains the FCM device token, and
- * POSTs it to the backend so the server can send push notifications.
- *
- * Call this immediately after a successful login.
- */
-export const registerFcmToken = async () => {
+  if (!messaging) {
+    console.warn("Firebase messaging is not initialized.");
+    return null;
+  }
+
   try {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-
+    console.log("FCM: Current notification permission status is:", Notification.permission);
     const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      console.warn('[FCM] Notification permission denied.');
-      return;
+    console.log("FCM: Notification permission request returned:", permission);
+    if (permission !== "granted") {
+      console.warn("FCM: Notification permission was not granted.");
+      return null;
     }
 
-    const messaging = await getFirebaseMessaging();
-    if (!messaging) {
-      console.warn('[FCM] Firebase Messaging not supported in this browser.');
-      return;
-    }
-
-    const fcmToken = await getToken(messaging as Messaging, { vapidKey: VAPID_KEY });
-    if (!fcmToken) {
-      console.warn('[FCM] Failed to get FCM token.');
-      return;
-    }
-
-    await apiRequest({
-      method: 'POST',
-      url: apiEndpoints.fcmToken,
-      data: { fcmToken },
+    console.log("FCM: Requesting token with VAPID key:", process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY);
+    const currentToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
     });
 
-    console.log('[FCM] Token registered successfully.');
+    if (currentToken) {
+      return currentToken;
+    } else {
+      console.warn("No registration token available. Request permission to generate one.");
+      return null;
+    }
   } catch (err) {
-    console.error('[FCM] Registration failed:', err);
+    console.error("An error occurred while retrieving token:", err);
+    return null;
   }
-};
-
-/**
- * Deletes the FCM token from the backend.
- * Call this before clearing Redux auth state on logout.
- */
-export const removeFcmToken = async () => {
-  try {
-    await apiRequest({
-      method: 'DELETE',
-      url: apiEndpoints.fcmToken,
-    });
-    console.log('[FCM] Token cleared from backend.');
-  } catch (err) {
-    // Silently fail — user is logging out anyway
-    console.warn('[FCM] Failed to clear token on backend:', err);
-  }
-};
-
-/**
- * Subscribes to foreground FCM messages.
- * Returns an unsubscribe function — call it on component unmount.
- *
- * @param onPayload  Callback invoked with each incoming message payload.
- */
-export const subscribeToForegroundMessages = async (
-  onPayload: (payload: any) => void,
-): Promise<(() => void) | null> => {
-  const messaging = await getFirebaseMessaging();
-  if (!messaging) return null;
-
-  const unsubscribe = onMessage(messaging as Messaging, onPayload);
-  return unsubscribe;
 };
