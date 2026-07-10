@@ -26,7 +26,17 @@ type FormValues = {
   message: string;
 };
 
-export default function StartProjectDialog() {
+interface GetStartedProps {
+  compact?: boolean;
+  disabledTrigger?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export default function StartProjectDialog({ 
+  compact = false, 
+  disabledTrigger = false, 
+  onClick 
+}: GetStartedProps) {
   const {
     register,
     handleSubmit,
@@ -48,9 +58,16 @@ export default function StartProjectDialog() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.location.hash === "#connect" && (userToken.accessToken == null)) {
-        setOpen(true);
+        const isMobileDevice = window.innerWidth < 768;
+        // Only open the instance matching the current screen mode to prevent duplicate overlapping popups
+        if ((isMobileDevice && compact) || (!isMobileDevice && !compact)) {
+          setOpen(true);
+          // Clear the hash from URL so it doesn't re-trigger on layout changes
+          window.history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -81,14 +98,35 @@ export default function StartProjectDialog() {
       if (!val) setSuccess(false);
       setOpen(val);
     }}>
-      <DialogTrigger asChild>
+      {disabledTrigger ? (
         <button
-          className={`shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold tracking-wide flex items-center gap-2 group transition-all  cursor-pointer`}
+          onClick={onClick}
+          aria-label="Get Started"
+          className="shimmer-btn text-white p-2 rounded-full flex items-center justify-center transition-all cursor-pointer w-8 h-8 shrink-0"
         >
-          Get Started
-          <FaArrowRight className="group-hover:translate-x-0.5 transition-transform duration-200 text-xs" />
+          <FaRocket className="text-white text-xs" />
         </button>
-      </DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          {compact ? (
+            <button
+              onClick={onClick}
+              aria-label="Get Started"
+              className="shimmer-btn text-white p-2 rounded-full flex items-center justify-center transition-all cursor-pointer w-8 h-8 shrink-0"
+            >
+              <FaRocket className="text-white text-xs" />
+            </button>
+          ) : (
+            <button
+              onClick={onClick}
+              className={`shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold tracking-wide flex items-center gap-2 group transition-all cursor-pointer whitespace-nowrap`}
+            >
+              Get Started
+              <FaArrowRight className="group-hover:translate-x-0.5 transition-transform duration-200 text-xs" />
+            </button>
+          )}
+        </DialogTrigger>
+      )}
 
       <DialogContent className="sm:max-w-[520px] bg-gray-900 border border-indigo-500/20 text-white p-0 overflow-hidden">
         {/* Header gradient strip */}

@@ -12,6 +12,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ navLinks }: MobileMenuProps) {
     const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+    const isDark = useSelector((state: RootState) => state.theme?.isDark ?? true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -25,21 +26,25 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
         <>
             <button 
                 onClick={() => setIsMenuOpen(true)} 
-                className="text-gray-400 hover:text-indigo-400 transition-colors duration-200 cursor-pointer p-2 rounded-full hover:bg-white/5 flex items-center justify-center"
+                className={`text-gray-400 hover:text-indigo-400 transition-colors duration-200 cursor-pointer p-2 rounded-full flex items-center justify-center ${
+                    isDark ? "hover:bg-white/5" : "hover:bg-black/5"
+                }`}
                 aria-label="Open menu"
             >
                 <FaBars size={20} />
             </button>
 
             {isMenuOpen && mounted && createPortal(
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 transition-all duration-300">
+                <div className={`fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 transition-all duration-300 ${
+                    isDark ? "bg-black/60" : "bg-black/20"
+                }`}>
                     <div 
                         className="w-[90%] max-w-sm rounded-2xl p-8 flex flex-col items-center justify-center relative overflow-hidden animate-fadeIn"
                         style={{
-                            border: "1px solid rgba(99, 102, 241, 0.25)",
-                            background: "rgba(15, 15, 26, 0.95)",
+                            border: isDark ? "1px solid rgba(99, 102, 241, 0.25)" : "1px solid rgba(99, 102, 241, 0.15)",
+                            background: isDark ? "rgba(15, 15, 26, 0.95)" : "rgba(255, 255, 255, 0.95)",
                             backdropFilter: "blur(16px)",
-                            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)"
+                            boxShadow: isDark ? "0 20px 40px rgba(0, 0, 0, 0.5)" : "0 20px 40px rgba(0, 0, 0, 0.08)"
                         }}
                     >
                         {/* Background blobs */}
@@ -49,7 +54,9 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
                         {/* Close Button */}
                         <button
                             onClick={() => setIsMenuOpen(false)}
-                            className="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors cursor-pointer p-2 rounded-full hover:bg-white/5"
+                            className={`absolute top-5 right-5 text-gray-400 transition-colors cursor-pointer p-2 rounded-full ${
+                                isDark ? "hover:text-white hover:bg-white/5" : "hover:text-gray-900 hover:bg-black/5"
+                            }`}
                             aria-label="Close menu"
                         >
                             <FaTimes size={18} />
@@ -61,7 +68,9 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
                                 <a
                                     key={link.title}
                                     href={link.href}
-                                    className="text-gray-300 hover:text-indigo-400 py-3 border-b border-white/5 last:border-0 transition-colors duration-200"
+                                    className={`py-3 border-b border-white/5 last:border-0 transition-colors duration-200 ${
+                                        isDark ? "text-gray-300 hover:text-indigo-400" : "text-gray-700 hover:text-indigo-650"
+                                    }`}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {link.title}
@@ -71,9 +80,9 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
 
                         {/* Social Icons */}
                         <div className="flex gap-6 text-2xl mt-8 pt-6 border-t border-white/5 w-full justify-center text-gray-400 z-10">
-                            <a href="https://github.com/Tuhin1904" className="hover:text-white transition-colors"><FaGithub /></a>
-                            <a href="https://www.linkedin.com/in/tuhinghosh19/" className="hover:text-white transition-colors"><FaLinkedin /></a>
-                            <a href="https://www.instagram.com/tuhingh19/" className="hover:text-white transition-colors"><FaInstagram /></a>
+                            <a href="https://github.com/Tuhin1904" className={`transition-colors ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}><FaGithub /></a>
+                            <a href="https://www.linkedin.com/in/tuhinghosh19/" className={`transition-colors ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}><FaLinkedin /></a>
+                            <a href="https://www.instagram.com/tuhingh19/" className={`transition-colors ${isDark ? "hover:text-white" : "hover:text-gray-900"}`}><FaInstagram /></a>
                         </div>
                     </div>
                 </div>,
