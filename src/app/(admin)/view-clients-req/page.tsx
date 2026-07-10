@@ -1,4 +1,4 @@
-import AllProjectRequests from '@/customcomponents/Admin/AllProjectRequests'
+import AllProjectRequests from '@/components/admin/AllProjectRequests'
 import React from 'react'
 
 const page = () => {

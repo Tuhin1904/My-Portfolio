@@ -1,12 +1,12 @@
 import dynamic from 'next/dynamic';
-import AboutPage from "../customcomponents/About";
-import AboutEducation from "../customcomponents/AboutEducation";
+import AboutPage from "@/components/portfolio/About";
+import AboutEducation from "@/components/portfolio/AboutEducation";
 
-const CursorTracker = dynamic(() => import("../customcomponents/Cursor"));
-const DescriptionAbout = dynamic(() => import("../customcomponents/DescriptionAbout"));
-const Experience = dynamic(() => import("../customcomponents/Experience"));
-const OrbitingCirclesDemo = dynamic(() => import("../customcomponents/OrbitingCircleComponent"));
-const ContactForm = dynamic(() => import("../customcomponents/ContactMe"));
+const CursorTracker = dynamic(() => import("@/components/common/Cursor"));
+const DescriptionAbout = dynamic(() => import("@/components/portfolio/DescriptionAbout"));
+const Experience = dynamic(() => import("@/components/portfolio/Experience"));
+const OrbitingCirclesDemo = dynamic(() => import("@/components/portfolio/OrbitingCircleComponent"));
+const ContactForm = dynamic(() => import("@/components/portfolio/ContactMe"));
 
 export default function Home() {
   return (

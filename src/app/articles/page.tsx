@@ -1,5 +1,5 @@
 import React from 'react'
-import Articles from '../../customcomponents/Articles'
+import Articles from '@/components/portfolio/Articles';
 
 const page = () => {
     return (

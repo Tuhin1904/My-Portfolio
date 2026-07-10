@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Montserrat, Geist } from "next/font/google";
 import "./global.css";
-import Header from "../customcomponents/Header";
+import Header from "@/components/common/Header";
 import dynamic from 'next/dynamic';
 import { cn } from "@/lib/utils";
-import StorePersistProvider from "./reduxLayout/StorePersistProvider";
+import StorePersistProvider from "@/providers/StorePersistProvider";
 
-const Footer = dynamic(() => import("../customcomponents/Footer"));
-import ThemeSync from "../customcomponents/ThemeSync";
+const Footer = dynamic(() => import("@/components/common/Footer"));
+import ThemeSync from "@/components/common/ThemeSync";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 const montserrat = Montserrat({

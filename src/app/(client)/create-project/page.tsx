@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import CreateProjectRequest from './component/CreateProjectRequest'
+import CreateProjectRequest from '@/components/client/CreateProjectRequest'
 
 const page = () => {
     return (

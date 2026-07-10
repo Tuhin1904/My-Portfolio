@@ -7,10 +7,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import useAuthChecker from "@/hooks/useAuthChecker";
-import LogoutButton from "../../customcomponents/LogoutConfirm";
+import LogoutButton from "@/components/common/LogoutConfirm";
 import Image from "next/image";
 import { toggleTheme } from "@/store/slices/ThemeSlice";
-import NotificationBell from "@/customcomponents/NotificationBell";
+import NotificationBell from "@/components/common/NotificationBell";
 
 export default function DashboardLayout({
     children,
