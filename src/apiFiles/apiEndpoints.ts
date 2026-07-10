@@ -12,6 +12,10 @@ export const apiEndpoints = {
   chatRequest: "/chat/request",
   myReqStatus: "/chat/requests/my",
   updateFcmToken: "/users/fcm-token",
+  verifyOtp: "/users/verify-otp",
+  resendOtp: "/users/resend-otp",
+  forgotPassword: "/users/forgot-password",
+  resetPassword: "/users/reset-password",
 
   // For user
   viewMyChatrequestStat: (queryId: string) => `/chat/request/status?queryId=${queryId}`,

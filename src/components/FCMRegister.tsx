@@ -45,7 +45,6 @@ export default function FCMRegister() {
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
         new Notification(payload.notification?.title || "New Notification", {
           body: payload.notification?.body || "",
-          icon: "/images/icon-192x192.png",
         });
       }
     });

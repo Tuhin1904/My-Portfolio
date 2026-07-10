@@ -5,6 +5,9 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store';
+import { verifyOtpThunk } from '@/store/slices/AuthThunks';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import ButtonSpinner from '@/components/common/ButtonSpinner';
@@ -19,8 +22,14 @@ type FormValues = {
 
 const SignUpForm = () => {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
+
+    const [isOtpStep, setIsOtpStep] = useState(false);
+    const [emailForVerification, setEmailForVerification] = useState('');
+    const [otpCode, setOtpCode] = useState('');
 
     const {
         register,
@@ -37,8 +46,9 @@ const SignUpForm = () => {
                 data: { ...data, userRole: 2 } // Registered Client user role is 2
             });
 
-            toast.success("Account created! Please sign in.");
-            router.push("/sign-in");
+            toast.success("Signup initiated! OTP code sent to your email.");
+            setEmailForVerification(data.email);
+            setIsOtpStep(true);
         } catch (err: any) {
             console.error("Sign up error:", err);
             toast.error(err?.message || "Sign up failed");
@@ -46,6 +56,119 @@ const SignUpForm = () => {
             setLoading(false);
         }
     };
+
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!otpCode || otpCode.length !== 6) {
+            toast.error("Please enter a valid 6-digit OTP");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const resultAction = await dispatch(verifyOtpThunk({ email: emailForVerification, otp: otpCode }));
+
+            if (verifyOtpThunk.fulfilled.match(resultAction)) {
+                const user = resultAction.payload?.user;
+                if (user?.userRole == 2) {
+                    router.push("/my-project-requests");
+                } else {
+                    router.push("/view-clients-req");
+                }
+                toast.success("Email verified successfully! Welcome.");
+            } else {
+                const errorMsg = resultAction.payload as string;
+                toast.error(errorMsg || "Verification failed");
+            }
+        } catch (err: any) {
+            console.error("Verification error:", err);
+            toast.error(err?.message || "Verification failed");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResendOtp = async () => {
+        try {
+            setResendLoading(true);
+            await apiRequest({
+                method: "POST",
+                url: apiEndpoints.resendOtp,
+                data: { email: emailForVerification }
+            });
+            toast.success("A new OTP has been sent to your email.");
+        } catch (err: any) {
+            console.error("Resend OTP error:", err);
+            toast.error(err?.message || "Failed to resend OTP");
+        } finally {
+            setResendLoading(false);
+        }
+    };
+
+    if (isOtpStep) {
+        return (
+            <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 relative overflow-hidden">
+                {/* Background blobs */}
+                <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+                {/* Dot grid */}
+                <div className="absolute inset-0 dot-grid-bg opacity-40 pointer-events-none" />
+
+                <div className="relative w-full max-w-md z-10">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-bold text-white mb-2">Verify OTP</h1>
+                        <p className="text-gray-400 text-sm">We've sent a 6-digit code to <span className="text-indigo-400 font-semibold">{emailForVerification}</span></p>
+                    </div>
+
+                    <div className="glass-card rounded-2xl p-8" style={{ border: '1px solid rgba(99,102,241,0.2)' }}>
+                        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-5">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-1.5">Verification Code</label>
+                                <input
+                                    type="text"
+                                    placeholder="123456"
+                                    maxLength={6}
+                                    value={otpCode}
+                                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                                    className="w-full bg-gray-800/60 border border-white/8 text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none text-center text-2xl tracking-[10px] font-bold transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
+                                    required
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+                            >
+                                {loading ? <ButtonSpinner text="Verifying..." /> : "Verify Code"}
+                            </button>
+
+                            <div className="flex flex-col gap-2.5 mt-2">
+                                <button
+                                    type="button"
+                                    onClick={handleResendOtp}
+                                    disabled={resendLoading}
+                                    className="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors cursor-pointer disabled:opacity-50"
+                                >
+                                    {resendLoading ? "Resending..." : "Resend Verification Code"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsOtpStep(false);
+                                        setOtpCode('');
+                                    }}
+                                    className="text-sm text-gray-400 hover:text-gray-450 transition-colors cursor-pointer"
+                                >
+                                    Back to Signup
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 relative overflow-hidden">
@@ -70,7 +193,7 @@ const SignUpForm = () => {
                             <label className="block text-sm font-medium text-gray-400 mb-1.5">Username</label>
                             <input
                                 type="text"
-                                placeholder="johndoe"
+                                placeholder="Your Name"
                                 {...register("userName", { required: "Username is required" })}
                                 className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.userName ? "border-red-500/60" : "border-white/8"}`}
                             />
@@ -118,7 +241,7 @@ const SignUpForm = () => {
                             <label className="block text-sm font-medium text-gray-400 mb-1.5">Location</label>
                             <input
                                 type="text"
-                                placeholder="New York, USA"
+                                placeholder="Kolkata, India"
                                 {...register("location", { required: "Location is required" })}
                                 className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.location ? "border-red-500/60" : "border-white/8"}`}
                             />
@@ -136,7 +259,13 @@ const SignUpForm = () => {
                                     placeholder="••••••••"
                                     {...register("password", {
                                         required: "Password is required",
-                                        minLength: { value: 8, message: "Minimum 8 characters" },
+                                        minLength: { value: 8, message: "Password must be at least 8 characters" },
+                                        validate: {
+                                            hasUppercase: (value) => /[A-Z]/.test(value) || "Password must contain at least one uppercase letter",
+                                            hasLowercase: (value) => /[a-z]/.test(value) || "Password must contain at least one lowercase letter",
+                                            hasNumber: (value) => /[0-9]/.test(value) || "Password must contain at least one number",
+                                            hasSpecial: (value) => /[^A-Za-z0-9]/.test(value) || "Password must contain at least one special character",
+                                        }
                                     })}
                                     className={`w-full bg-gray-800/60 border text-white placeholder-gray-600 rounded-xl px-4 py-3 pr-11 outline-none transition-all duration-200 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 ${errors.password ? "border-red-500/60" : "border-white/8"}`}
                                 />
@@ -157,7 +286,7 @@ const SignUpForm = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all mt-2 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all mt-2 ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
                             {loading ? <ButtonSpinner text="Creating account..." /> : "Create Account"}
                         </button>
