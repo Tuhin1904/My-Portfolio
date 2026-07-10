@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: "Hi, I'm Tuhin, a frontend developer crafting interactive and engaging web experiences.",
     url: "https://tuhindev.me",
     siteName: "Tuhin Ghosh Portfolio",
-    images: [{ url: "https://tuhindev.me/images/generated-image.png", width: 1200, height: 630, alt: "Tuhin Ghosh Portfolio Preview" }],
+    images: [{ url: "https://tuhindev.me/images/dynamic-portfolio.png", width: 1200, height: 630, alt: "Tuhin Ghosh Portfolio Preview" }],
     locale: "en_US",
     type: "website",
   }
