@@ -3,7 +3,7 @@ import { apiRequest } from '@/apiFiles/apiClient'
 import { apiEndpoints } from '@/apiFiles/apiEndpoints'
 import React, { useEffect, useState } from 'react'
 import SkeletonTable from '@/components/common/SkeletonTable'
-import { getLabel } from '@/const/masterData'
+import { getLabel, getBudgetLabel } from '@/const/masterData'
 import { useRouter } from 'next/navigation'
 import PaginationComp from '@/components/common/Pagination'
 import { FaExternalLinkAlt } from 'react-icons/fa'
@@ -147,7 +147,7 @@ const AllProjectRequests = () => {
                                                     {getLabel(item.workType)}
                                                 </span>
                                             </td>
-                                            <td className={`px-5 py-4 text-gray-400 ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>{item.budget}</td>
+                                            <td className={`px-5 py-4 text-gray-400 ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>{getBudgetLabel(item.budget)}</td>
                                             <td className={`px-5 py-4 capitalize ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>
                                                 <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${item.typeOfUser === 'guest' ? 'badge-past' : 'badge-active'}`}>
                                                     {item.typeOfUser}

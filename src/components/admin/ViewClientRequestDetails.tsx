@@ -17,7 +17,7 @@ import {
 } from "@/const/milestones";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getLabel } from "@/const/masterData";
+import { getLabel, getBudgetLabel } from "@/const/masterData";
 import { ChevronUp, ChevronDown, ChevronLeft, Calendar, User, Briefcase, Mail, DollarSign, MessageSquare, ShieldAlert } from "lucide-react";
 
 const ViewClientRequestDetails = () => {
@@ -161,7 +161,7 @@ const ViewClientRequestDetails = () => {
                                 <Briefcase size={16} className="text-indigo-400 shrink-0" />
                                 <div className="min-w-0">
                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Work Type</p>
-                                    <p className="text-sm text-gray-300 capitalize">{data.workType}</p>
+                                    <p className="text-sm text-gray-300 capitalize">{getLabel(data.workType)}</p>
                                 </div>
                             </div>
 
@@ -169,7 +169,7 @@ const ViewClientRequestDetails = () => {
                                 <DollarSign size={16} className="text-indigo-400 shrink-0" />
                                 <div className="min-w-0">
                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Budget range</p>
-                                    <p className="text-sm text-gray-300">{data.budget}</p>
+                                    <p className="text-sm text-gray-300">{getBudgetLabel(data.budget)}</p>
                                 </div>
                             </div>
 

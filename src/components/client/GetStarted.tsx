@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import ButtonSpinner from "@/components/common/ButtonSpinner";
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
-import { workTypes } from "@/const/masterData";
+import { workTypes, budgetOptions } from "@/const/masterData";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { FaArrowRight, FaCheckCircle, FaRocket } from "react-icons/fa";
@@ -166,10 +166,11 @@ export default function StartProjectDialog() {
                     <SelectValue placeholder="Select Budget" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900 border border-white/10 text-white">
-                    <SelectItem value="10k-25k" className="hover:bg-indigo-500/10 cursor-pointer">₹10k–₹25k</SelectItem>
-                    <SelectItem value="25k-50k" className="hover:bg-indigo-500/10 cursor-pointer">₹25k–₹50k</SelectItem>
-                    <SelectItem value="50k-1l" className="hover:bg-indigo-500/10 cursor-pointer">₹50k–₹1L</SelectItem>
-                    <SelectItem value="1l+" className="hover:bg-indigo-500/10 cursor-pointer">₹1L+</SelectItem>
+                    {budgetOptions.map((item) => (
+                      <SelectItem key={item.value} value={item.value} className="hover:bg-indigo-500/10 cursor-pointer">
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 {errors.budget && <p className="text-red-400 text-xs mt-1">{errors.budget.message}</p>}
