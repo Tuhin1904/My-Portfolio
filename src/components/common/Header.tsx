@@ -67,6 +67,10 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isActionsExpanded]);
 
+  const handleRoute = () => {
+    router.push("/")
+  }
+
   return (
     <header className={`relative flex items-center justify-between px-4 md:px-8 py-4 border-b border-white/8 bg-gray-900/85 backdrop-blur-md sticky top-0 z-40 ${!shouldShowHeader ? "hidden" : ""}`}>
       {/* Left Navigation */}
@@ -99,13 +103,13 @@ const Header = () => {
       {/* Center Logo */}
       <div className='hidden md:flex flex-1 items-center justify-center'>
         <div className='w-14 h-14 rounded-full flex justify-center items-center text-xl font-bold text-white pulse-glow'
-          style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+          style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }} onClick={handleRoute}>
           TG
         </div>
       </div>
       <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex md:hidden items-center justify-center pointer-events-none z-0'>
         <div className='w-11 h-11 rounded-full flex justify-center items-center text-base font-bold text-white pulse-glow'
-          style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+          style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }} onClick={handleRoute}>
           TG
         </div>
       </div>

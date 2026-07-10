@@ -40,13 +40,13 @@ const AboutEducation = () => {
                 {/* Vertical Timeline */}
                 <div className="relative">
                     {/* Central line */}
-                    <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-0.5 timeline-line" />
+                    <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 timeline-line" />
 
                     <div className="flex flex-col gap-16">
                         {aboutData.map((item, idx) => (
                             <div key={item.id} className={`relative flex flex-col md:flex-row items-start md:items-center gap-8 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                                 {/* Timeline dot */}
-                                <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 top-8 md:top-1/2 md:-translate-y-1/2 w-5 h-5 rounded-full border-2 border-indigo-400 bg-gray-900 z-10"
+                                <div className="absolute left-4 md:left-1/2 -translate-x-1/2 top-8 md:top-1/2 md:-translate-y-1/2 w-5 h-5 rounded-full border-2 border-indigo-400 bg-gray-900 z-10"
                                     style={{ boxShadow: '0 0 12px rgba(99,102,241,0.7)' }} />
 
                                 {/* Text card */}

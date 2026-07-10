@@ -157,7 +157,7 @@ const page = () => {
 
                         {!TERMINAL_STATUS.includes(status) && (
                             <div className="relative pl-6 space-y-6">
-                                <div className="absolute left-2.5 top-2.5 bottom-2.5 w-0.5 bg-gray-800" />
+                                <div className="absolute left-[11px] top-2.5 bottom-2.5 w-0.5 -translate-x-1/2 bg-gray-800" />
 
                                 {STATUS_FLOW.map((step, index) => {
                                     const normalizedStatus = status?.trim().toLowerCase();
@@ -167,7 +167,7 @@ const page = () => {
 
                                     return (
                                         <div key={step} className="relative flex gap-4 items-start">
-                                            <div className={`absolute -left-[21px] w-[11px] h-[11px] rounded-full border-2 transition-all duration-300 z-10
+                                            <div className={`absolute left-[-13px] -translate-x-1/2 w-[11px] h-[11px] rounded-full border-2 transition-all duration-300 z-10
                                                 ${isActive ? 'bg-indigo-500 border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-gray-900 border-gray-700'}`} />
 
                                             <div className="min-w-0">
