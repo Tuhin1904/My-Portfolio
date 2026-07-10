@@ -258,7 +258,7 @@ const SignInForm = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                             >
                                 {loading ? <ButtonSpinner text="Verifying..." /> : "Verify Code"}
                             </button>

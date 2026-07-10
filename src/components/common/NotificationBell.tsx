@@ -174,13 +174,13 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
               : "right-[-60px] xs:right-[-20px] sm:right-0"
             }`}
           style={{
-            border: "1px solid rgba(99, 102, 241, 0.25)",
-            background: "rgba(15, 15, 26, 0.95)",
+            border: "1px solid var(--th-border)",
+            background: "var(--th-bg-deeper)",
             backdropFilter: "blur(16px)",
           }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--th-divider)] bg-black/[0.01] dark:bg-white/[0.01]">
             <h3 className="text-sm font-semibold text-white">Notifications</h3>
             {unreadCount > 0 && (
               <button
@@ -194,7 +194,7 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
           </div>
 
           {/* List */}
-          <div className="max-h-[350px] overflow-y-auto divide-y divide-white/5 custom-scrollbar">
+          <div className="max-h-[350px] overflow-y-auto divide-y divide-[var(--th-divider)] custom-scrollbar">
             {notificationsList.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
                 <Inbox size={32} className="text-gray-600 mb-2" />
@@ -207,14 +207,18 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
               notificationsList.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex gap-3 p-4 transition-all duration-200 ${notif.read ? "bg-gray-900/40 hover:bg-gray-900/60" : "bg-white/[0.02] hover:bg-white/[0.04]"
-                    }`}
+                  className={`flex gap-3 p-4 transition-all duration-200 ${
+                    notif.read
+                      ? "bg-black/[0.02] hover:bg-black/[0.04] dark:bg-white/[0.01] dark:hover:bg-white/[0.02]"
+                      : "bg-indigo-500/[0.02] hover:bg-indigo-500/[0.04] dark:bg-indigo-500/[0.04] dark:hover:bg-indigo-500/[0.06]"
+                  }`}
                 >
                   {/* Status Indicator */}
                   <div className="flex-shrink-0 mt-1">
                     <span
-                      className={`block w-2.5 h-2.5 rounded-full ${notif.read ? "bg-gray-600" : "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
-                        }`}
+                      className={`block w-2.5 h-2.5 rounded-full ${
+                        notif.read ? "bg-gray-400 dark:bg-gray-600" : "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
+                      }`}
                     />
                   </div>
 
@@ -280,7 +284,7 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
 
           {/* Footer Call To Action for Guests */}
           {!userId && notificationsList.length > 0 && (
-            <div className="p-3 border-t border-white/5 bg-white/[0.01] flex justify-center">
+            <div className="p-3 border-t border-[var(--th-border)] bg-black/[0.01] dark:bg-white/[0.01] flex justify-center">
               <button
                 onClick={() => {
                   setIsOpen(false);

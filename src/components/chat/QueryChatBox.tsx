@@ -244,9 +244,9 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
   }
 
   return (
-    <div className="flex flex-col h-[460px] bg-slate-950/40 rounded-xl border border-white/5 overflow-hidden">
+    <div className="flex flex-col h-[460px] bg-[var(--th-bg-deeper)] rounded-xl border border-[var(--th-border)] overflow-hidden">
       {/* Online status header */}
-      <div className="flex items-center gap-2.5 px-4 py-2.5 bg-slate-950/50 border-b border-white/5 shrink-0">
+      <div className="flex items-center gap-2.5 px-4 py-2.5 bg-black/[0.01] dark:bg-white/[0.01] border-b border-[var(--th-border)] shrink-0">
         <div className="relative">
           <div className="w-7 h-7 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-xs font-bold border border-indigo-500/20">
             {partnerStatus.isOnline ? "●" : "○"}
@@ -343,7 +343,7 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
                 {/* Message bubble */}
                 <div className="flex flex-col max-w-[75%] gap-0.5">
                   {!isMe && (
-                    <span className="text-[9px] text-gray-500 px-1">
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 px-1">
                       {senderName}
                     </span>
                   )}
@@ -351,9 +351,10 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
                   <div
                     className={`px-3 py-2 rounded-2xl text-xs leading-relaxed break-words ${
                       isMe
-                        ? "bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-br-none shadow-[0_2px_8px_rgba(99,102,241,0.25)]"
+                        ? "bg-gradient-to-r from-indigo-500 to-violet-500 rounded-br-none shadow-[0_2px_8px_rgba(99,102,241,0.25)]"
                         : "bg-slate-900 border border-white/5 text-gray-300 rounded-bl-none"
                     }`}
+                    style={isMe ? { color: "#ffffff" } : undefined}
                   >
                     {msg.message}
                   </div>
@@ -364,7 +365,7 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
                       isMe ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <span className="text-[9px] text-gray-600">
+                    <span className="text-[9px] text-gray-650">
                       {new Date(msg.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -390,7 +391,7 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
 
       {/* Message input — locked when chat is disabled */}
       {chatDisabled ? (
-        <div className="p-3 bg-slate-950/70 border-t border-red-500/20 flex items-center gap-2.5 shrink-0">
+        <div className="p-3 bg-transparent border-t border-[var(--th-border)] flex items-center gap-2.5 shrink-0">
           <Ban size={14} className="text-red-400 shrink-0" />
           <p className="text-[11px] text-red-400/70 italic">
             Chat has been disabled for this inquiry.
@@ -399,7 +400,7 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
       ) : (
         <form
           onSubmit={handleSendMessage}
-          className="p-2.5 bg-slate-950/70 border-t border-white/5 flex gap-2 shrink-0"
+          className="p-2.5 bg-transparent border-t border-[var(--th-border)] flex gap-2 shrink-0"
         >
           <input
             ref={inputRef}
@@ -407,7 +408,7 @@ export const QueryChatBox: React.FC<QueryChatBoxProps> = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 bg-slate-900/60 border border-white/5 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+            className="flex-1 bg-[var(--th-input-bg)] border border-[var(--th-border)] rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-indigo-500/50 transition-colors"
           />
           <button
             type="submit"

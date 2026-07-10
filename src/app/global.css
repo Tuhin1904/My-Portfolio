@@ -75,6 +75,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-gray-650: var(--th-gray-650);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -328,6 +329,7 @@ body {
   --th-text:        #f9fafb;       /* near-white */
   --th-text-muted:  #9ca3af;       /* gray-400 */
   --th-text-faint:  #4b5563;       /* gray-600 */
+  --th-gray-650:    #9ca3af;
   --th-card-bg:     rgba(255,255,255,0.04);
   --th-input-bg:    rgba(31,41,55,0.6);   /* gray-800/60 */
   --th-input-border:rgba(255,255,255,0.08);
@@ -345,6 +347,7 @@ body {
   --th-text:        #0f172a;       /* slate-900 */
   --th-text-muted:  #64748b;       /* slate-500 */
   --th-text-faint:  #94a3b8;       /* slate-400 */
+  --th-gray-650:    #4b5563;
   --th-card-bg:     rgba(255,255,255,0.9);
   --th-input-bg:    rgba(241,245,249,0.8);   /* slate-100 */
   --th-input-border:rgba(0,0,0,0.1);
