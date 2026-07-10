@@ -1,7 +1,22 @@
 import { io, Socket } from "socket.io-client";
 
-// Backend is running on port 8080
-const SOCKET_URL = "http://localhost:8080";
+// Derive Socket URL dynamically based on environment configuration
+const getSocketUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_SOCKET_URL) {
+    return process.env.NEXT_PUBLIC_SOCKET_URL;
+  }
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+  if (apiUrl.endsWith("/api")) {
+    return apiUrl.slice(0, -4);
+  }
+  if (apiUrl.endsWith("/api/")) {
+    return apiUrl.slice(0, -5);
+  }
+  return apiUrl;
+};
+
+const SOCKET_URL = getSocketUrl();
 
 let socket: Socket | null = null;
 
