@@ -12,3 +12,20 @@ export const STATUS_CONFIG: Record<string, string> = {
   rejected: "bg-red-500 text-white",
   cancelled: "bg-gray-600 text-white",
 };
+
+export const getStatusLabel = (status: string, role: 'admin' | 'client'): string => {
+  const s = status?.trim().toLowerCase();
+  if (s === 'accepted_by_client') {
+    return role === 'admin' ? 'Accepted By Client' : 'Approved By you';
+  }
+  const mappings: Record<string, string> = {
+    pending: "Pending",
+    accepted: "Accepted",
+    working: "Working",
+    delivered: "Delivered",
+    completed: "Completed",
+    rejected: "Rejected",
+    cancelled: "Cancelled",
+  };
+  return mappings[s] || status;
+};

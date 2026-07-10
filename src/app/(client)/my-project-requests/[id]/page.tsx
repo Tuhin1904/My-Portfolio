@@ -5,7 +5,7 @@ import { apiEndpoints } from '@/apiFiles/apiEndpoints';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { ChevronUp, ChevronDown, ChevronLeft, Mail, Briefcase, DollarSign, User, MessageSquare, ShieldAlert } from "lucide-react";
-import { STATUS_CONFIG, STATUS_FLOW, TERMINAL_STATUS } from '@/const/milestones';
+import { STATUS_CONFIG, STATUS_FLOW, TERMINAL_STATUS, getStatusLabel } from '@/const/milestones';
 import { getLabel } from '@/const/masterData';
 
 const page = () => {
@@ -94,7 +94,7 @@ const page = () => {
                                 <h2 className="text-2xl font-bold text-white capitalize">{data.name}</h2>
                             </div>
                             <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider ${STATUS_CONFIG[status]}`}>
-                                {status}
+                                {getStatusLabel(status, 'client')}
                             </span>
                         </div>
 
@@ -148,7 +148,7 @@ const page = () => {
                     <div className="glass-card rounded-2xl p-6" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                         <div className="mb-6">
                             <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-1">Status Progress</p>
-                            <h3 className="text-white font-semibold capitalize">Current: {status}</h3>
+                            <h3 className="text-white font-semibold">Current: {getStatusLabel(status, 'client')}</h3>
                         </div>
 
                         {!TERMINAL_STATUS.includes(status) && (
@@ -169,7 +169,7 @@ const page = () => {
                                             <div className="min-w-0">
                                                 <p className={`text-xs font-semibold uppercase tracking-wider transition-colors
                                                     ${isCurrent ? 'text-indigo-400' : isActive ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                    {step}
+                                                    {getStatusLabel(step, 'client')}
                                                 </p>
                                                 <p className="text-[10px] text-gray-600 mt-0.5">
                                                     {isActive ? 'Step completed' : 'Pending step'}

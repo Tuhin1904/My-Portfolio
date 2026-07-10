@@ -116,7 +116,7 @@ export default function DashboardLayout({
             <div className="flex-1 flex flex-col min-w-0">
 
                 {/* Topbar */}
-                <header className="flex items-center justify-between px-5 h-14 shrink-0"
+                <header className="flex items-center justify-between px-5 h-14 shrink-0 relative z-30"
                     style={{ background: 'rgba(15,15,26,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(99,102,241,0.18)' }}>
                     <button
                         className="md:hidden cursor-pointer text-gray-500 hover:text-white transition-colors"

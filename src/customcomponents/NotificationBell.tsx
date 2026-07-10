@@ -94,15 +94,15 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
     : dummyDeleted
       ? []
       : [
-          {
-            id: "onboarding",
-            title: "Get Started Today! 👋",
-            body: "Sign up now to submit project enquiries, track development milestones in real-time, and collaborate directly with me!",
-            read: dummyRead,
-            createdAt: new Date().toISOString(),
-            isDummy: true,
-          },
-        ];
+        {
+          id: "onboarding",
+          title: "Get Started Today! 👋",
+          body: "Sign up now to submit project enquiries, track development milestones in real-time, and collaborate directly with me!",
+          read: dummyRead,
+          createdAt: new Date().toISOString(),
+          isDummy: true,
+        },
+      ];
 
   const unreadCount = userId
     ? notifications.filter((n) => !n.read).length
@@ -169,13 +169,12 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
       {/* Popover Dropdown */}
       {isOpen && (
         <div
-          className={`absolute mt-3 w-80 sm:w-96 rounded-2xl shadow-2xl z-50 border overflow-hidden transition-all duration-300 ${
-            align === "left"
-              ? "left-[-20px] sm:left-auto sm:right-0"
-              : align === "right"
-                ? "right-[-10px] sm:right-0"
-                : "right-[-60px] xs:right-[-20px] sm:right-0"
-          }`}
+          className={`absolute mt-3 w-80 sm:w-96 rounded-2xl shadow-2xl z-50 border overflow-hidden transition-all duration-300 ${align === "left"
+            ? "left-[-20px] sm:left-auto sm:right-0"
+            : align === "right"
+              ? "right-[-10px] sm:right-0"
+              : "right-[-60px] xs:right-[-20px] sm:right-0"
+            }`}
           style={{
             border: "1px solid rgba(99, 102, 241, 0.25)",
             background: "rgba(15, 15, 26, 0.95)",
@@ -210,7 +209,7 @@ export default function NotificationBell({ align = "auto" }: { align?: "left" | 
               notificationsList.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex gap-3 p-4 transition-all duration-200 ${notif.read ? "bg-transparent" : "bg-white/[0.02] hover:bg-white/[0.04]"
+                  className={`flex gap-3 p-4 transition-all duration-200 ${notif.read ? "bg-gray-900/40 hover:bg-gray-900/60" : "bg-white/[0.02] hover:bg-white/[0.04]"
                     }`}
                 >
                   {/* Status Indicator */}

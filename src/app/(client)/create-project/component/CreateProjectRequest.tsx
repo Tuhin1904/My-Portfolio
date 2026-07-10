@@ -51,9 +51,9 @@ const CreateProjectRequest = () => {
             // }
             toast("Request submitted successfully!");
             router.push("/my-project-requests");
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            toast("An error occurred while submitting the request.");
+            toast(err?.message || "An error occurred while submitting the request.");
         } finally {
             setLoading(false);
         }

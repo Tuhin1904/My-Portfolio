@@ -13,6 +13,7 @@ import {
     STATUS_CONFIG,
     STATUS_FLOW,
     TERMINAL_STATUS,
+    getStatusLabel,
 } from "@/const/milestones";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -149,7 +150,7 @@ const page = () => {
                                 <h2 className="text-2xl font-bold text-white capitalize">{data.name}</h2>
                             </div>
                             <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider ${STATUS_CONFIG[status]}`}>
-                                {status}
+                                {getStatusLabel(status, 'admin')}
                             </span>
                         </div>
 
@@ -205,7 +206,7 @@ const page = () => {
                     <div className="glass-card rounded-2xl p-6" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                         <div className="mb-6">
                             <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-1">Status Progress</p>
-                            <h3 className="text-white font-semibold capitalize">Current: {status}</h3>
+                            <h3 className="text-white font-semibold">Current: {getStatusLabel(status, 'admin')}</h3>
                         </div>
 
                         {/* Stepper nodes */}
@@ -228,7 +229,7 @@ const page = () => {
                                             <div className="min-w-0">
                                                 <p className={`text-xs font-semibold uppercase tracking-wider transition-colors
                                                     ${isCurrent ? 'text-indigo-400' : isActive ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                    {step}
+                                                    {getStatusLabel(step, 'admin')}
                                                 </p>
                                                 <p className="text-[10px] text-gray-600 mt-0.5">
                                                     {isActive ? 'Step completed' : 'Pending step'}
@@ -253,7 +254,7 @@ const page = () => {
                                         <SelectItem key={s} value={s} className="hover:bg-indigo-500/10 cursor-pointer">
                                             <div className="flex items-center gap-2">
                                                 <span className={`w-2.5 h-2.5 rounded-full ${STATUS_CONFIG[s]}`} />
-                                                <span className="capitalize text-sm">{s}</span>
+                                                <span className="text-sm">{getStatusLabel(s, 'admin')}</span>
                                             </div>
                                         </SelectItem>
                                     ))}

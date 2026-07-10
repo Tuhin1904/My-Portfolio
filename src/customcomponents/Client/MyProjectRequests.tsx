@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import PaginationComp from '../Pagination/Pagination'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react'
+import { STATUS_CONFIG, getStatusLabel } from '@/const/milestones'
 
 type Inquiry = {
     _id: string;
@@ -17,9 +18,10 @@ type Inquiry = {
     name: string;
     email: string;
     message: string;
+    status: string;
 };
 
-const mobileColumns = ["Work Type", "Budget", "Email", "Message", "Actions"];
+const mobileColumns = ["Work Type", "Budget", "Status", "Message", "Actions"];
 
 const MyProjectRequests = () => {
     const router = useRouter();
@@ -28,11 +30,18 @@ const MyProjectRequests = () => {
     const ITEMS_PER_PAGE = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const [mobileColIndex, setMobileColIndex] = useState(0);
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
 
     const getMyProjects = async () => {
         try {
             setLoading(true);
-            const res = await apiRequest({ method: "GET", url: apiEndpoints.getMyQueries });
+            const querySearch = statusFilter !== "all" ? statusFilter : search;
+            const res = await apiRequest({
+                method: "GET",
+                url: apiEndpoints.getMyQueries,
+                params: { search: querySearch || undefined }
+            });
             setProjects(res?.data || []);
         } catch (err) {
             console.log("Error:", err);
@@ -41,7 +50,7 @@ const MyProjectRequests = () => {
         }
     }
 
-    useEffect(() => { getMyProjects(); }, []);
+    useEffect(() => { getMyProjects(); }, [search, statusFilter]);
 
     const totalPages = Math.ceil(projects.length / ITEMS_PER_PAGE);
     const paginatedProjects = projects.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -63,6 +72,45 @@ const MyProjectRequests = () => {
                 </button>
             </div>
 
+            {/* Controls */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
+                {/* Search Bar */}
+                <div className="relative w-full sm:w-72">
+                    <input
+                        type="text"
+                        placeholder="Search queries..."
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="w-full bg-gray-800/60 border border-white/8 text-white placeholder-gray-500 rounded-xl pl-4 pr-10 py-2 text-sm outline-none transition-all duration-200 focus:border-indigo-500/60"
+                    />
+                </div>
+
+                {/* Dropdown Filter */}
+                <div className="w-full sm:w-48">
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => {
+                            setStatusFilter(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="w-full bg-gray-800/60 border border-white/8 text-white rounded-xl px-3 py-2 text-sm outline-none transition-all duration-200 focus:border-indigo-500/60 cursor-pointer"
+                    >
+                        <option value="all" className="bg-gray-900 text-white">All Statuses</option>
+                        <option value="pending" className="bg-gray-900 text-white">Pending</option>
+                        <option value="accepted" className="bg-gray-900 text-white">Accepted</option>
+                        <option value="accepted_by_client" className="bg-gray-900 text-white">Approved by You</option>
+                        <option value="working" className="bg-gray-900 text-white">Working</option>
+                        <option value="delivered" className="bg-gray-900 text-white">Delivered</option>
+                        <option value="completed" className="bg-gray-900 text-white">Completed</option>
+                        <option value="rejected" className="bg-gray-900 text-white">Rejected</option>
+                        <option value="cancelled" className="bg-gray-900 text-white">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
             {/* Table card */}
             <div className="glass-card rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="w-full overflow-x-auto">
@@ -72,7 +120,7 @@ const MyProjectRequests = () => {
                                 <th className="text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold">Name</th>
                                 <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 0 ? "table-cell" : "hidden md:table-cell"}`}>Work Type</th>
                                 <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>Budget</th>
-                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>Email</th>
+                                <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>Status</th>
                                 <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>Message</th>
                                 <th className={`text-left px-5 py-3.5 text-xs text-gray-500 uppercase tracking-wider font-semibold ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>Actions</th>
                             </tr>
@@ -108,7 +156,11 @@ const MyProjectRequests = () => {
                                                 </span>
                                             </td>
                                             <td className={`px-5 py-4 text-gray-400 ${mobileColIndex === 1 ? "table-cell" : "hidden md:table-cell"}`}>{item.budget}</td>
-                                            <td className={`px-5 py-4 text-gray-400 text-xs ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>{item.email}</td>
+                                            <td className={`px-5 py-4 ${mobileColIndex === 2 ? "table-cell" : "hidden md:table-cell"}`}>
+                                                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${STATUS_CONFIG[item.status] || 'bg-gray-600 text-white'}`}>
+                                                    {getStatusLabel(item.status, 'client')}
+                                                </span>
+                                            </td>
                                             <td className={`px-5 py-4 max-w-[200px] truncate text-gray-400 text-xs ${mobileColIndex === 3 ? "table-cell" : "hidden md:table-cell"}`}>{item.message}</td>
                                             <td className={`px-5 py-4 ${mobileColIndex === 4 ? "table-cell" : "hidden md:table-cell"}`}>
                                                 <button
