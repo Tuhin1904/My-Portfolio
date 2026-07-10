@@ -8,11 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import ButtonSpinner from "@/components/common/ButtonSpinner";
 import { toast } from "sonner"
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { workTypes, budgetOptions } from "@/const/masterData";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -41,6 +41,8 @@ export default function StartProjectDialog() {
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const lastPathname = useRef(pathname);
   const userToken = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
@@ -50,6 +52,14 @@ export default function StartProjectDialog() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (lastPathname.current !== pathname) {
+      setOpen(false);
+      setSuccess(false);
+      lastPathname.current = pathname;
+    }
+  }, [pathname]);
 
   const onSubmit = async (data: FormValues) => {
     try {
