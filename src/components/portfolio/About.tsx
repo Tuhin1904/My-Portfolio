@@ -109,7 +109,7 @@ export default function AboutPage() {
                     {/* CTA Row */}
                     <div className="flex items-center gap-4 mb-8 flex-wrap">
                         <a
-                            href="https://drive.google.com/file/d/1RV3XbvU_JwKFE96n1-jcZt3tj2wh64TI/view?usp=sharing"
+                            href="https://drive.google.com/file/d/1mVA_RLlyG5jHeajmL88G3ec5qevNSIqg/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="shimmer-btn text-white px-7 py-3 rounded-lg font-semibold text-sm tracking-wide shadow-lg"
