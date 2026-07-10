@@ -18,24 +18,28 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getLabel, getBudgetLabel } from "@/const/masterData";
-import { ChevronUp, ChevronDown, ChevronLeft, Calendar, User, Briefcase, Mail, DollarSign, MessageSquare, ShieldAlert } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronLeft, User, Briefcase, Mail, DollarSign, MessageSquare, ShieldAlert } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { QueryChatBox } from "@/components/chat/QueryChatBox";
 
 const ViewClientRequestDetails = () => {
     const route = useRouter();
     const { id } = useParams();
+    const userInfo = useSelector((state: RootState) => state.user);
     const [data, setData] = useState<any>(null);
     const [status, setStatus] = useState("");
     const [chatReq, setChatReq] = useState<any>(null);
-    const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+    // const [pendingRequests, setPendingRequests] = useState<any[]>([]);
     const [isChatPopupOpen, setIsChatPopupOpen] = useState(false);
 
     const getPendingRequests = async () => {
         try {
-            const res = await apiRequest({
-                method: "GET",
-                url: apiEndpoints.viewPendingChatRequests(id as string),
-            });
-            setPendingRequests(res?.data || []);
+            // const res = await apiRequest({
+            //     method: "GET",
+            //     url: apiEndpoints.viewPendingChatRequests(id as string),
+            // });
+            // setPendingRequests(res?.data || []);
         } catch (error) {
             console.error("Error fetching pending requests", error);
         }
@@ -95,6 +99,8 @@ const ViewClientRequestDetails = () => {
                 url: apiEndpoints.updateQuery(id as string),
                 data: { status: value },
             });
+            if (value == "accepted") route.push("/admin/messages");
+
         } catch (error) {
             console.error("Failed to update status", error);
         }
@@ -312,13 +318,7 @@ const ViewClientRequestDetails = () => {
                                 </p>
                             </div>
                         ) : chatReq.status === "accepted" ? (
-                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-center border border-white/5 rounded-xl bg-white/[0.01] min-h-[280px]">
-                                <MessageSquare size={36} className="text-indigo-400 animate-pulse" />
-                                <p className="text-sm font-semibold text-white">Chat coming soon</p>
-                                <p className="text-xs text-gray-500 max-w-[200px]">
-                                    Live chat consultation feature will be available in a future update.
-                                </p>
-                            </div>
+                            <QueryChatBox queryId={id as string} currentUserId={userInfo?._id || ""} />
                         ) : (
                             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
                                 <ShieldAlert size={28} className="text-red-400" />
@@ -327,6 +327,37 @@ const ViewClientRequestDetails = () => {
                                 </p>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            {status === "pending" && (
+                <div
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-slate-950/95 border border-indigo-500/35 shadow-[0_20px_50px_rgba(0,0,0,0.6)] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 z-50 backdrop-blur-xl animate-in slide-in-from-bottom duration-500"
+                    style={{ border: '1px solid rgba(99,102,241,0.25)' }}
+                >
+                    <div className="flex items-center gap-3 text-center sm:text-left">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0">
+                            <ShieldAlert size={20} />
+                        </div>
+                        <div>
+                            <h4 className="text-white font-semibold text-sm">Pending Review</h4>
+                            <p className="text-gray-400 text-xs mt-0.5">This project inquiry needs your approval before the client can begin chatting with you.</p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+                        <button
+                            onClick={() => handleStatusChange("rejected")}
+                            className="flex-1 sm:flex-none text-center text-xs font-semibold text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-400/50 px-4 py-2.5 rounded-xl transition-all cursor-pointer hover:bg-red-500/10"
+                        >
+                            Reject Request
+                        </button>
+                        <button
+                            onClick={() => handleStatusChange("accepted")}
+                            className="flex-1 sm:flex-none text-center text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-[0_4px_15px_rgba(99,102,241,0.35)]"
+                        >
+                            Accept Request
+                        </button>
                     </div>
                 </div>
             )}

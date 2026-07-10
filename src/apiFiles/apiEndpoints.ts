@@ -29,4 +29,5 @@ export const apiEndpoints = {
   getConversationByQuery: (queryId: string) => `/chat/conversations?queryId=${queryId}`,
   getConversationMessages: (conversationId: string, page: number) =>
     `/chat/conversations/${conversationId}/messages?page=${page}`,
+  getChatHistory: (queryId: string) => `/project/queries/${queryId}/history`,
 };

@@ -7,10 +7,14 @@ import React, { useEffect, useState } from 'react';
 import { ChevronUp, ChevronDown, ChevronLeft, Mail, Briefcase, DollarSign, User, MessageSquare, ShieldAlert } from "lucide-react";
 import { STATUS_CONFIG, STATUS_FLOW, TERMINAL_STATUS, getStatusLabel } from '@/const/milestones';
 import { getLabel } from '@/const/masterData';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { QueryChatBox } from '@/components/chat/QueryChatBox';
 
 const page = () => {
     const route = useRouter();
     const { id } = useParams();
+    const userInfo = useSelector((state: RootState) => state.user);
     const [data, setData] = useState<any>(null);
     const [status, setStatus] = useState("");
     const [chatReq, setChatReq] = useState<any>(null);
@@ -250,13 +254,7 @@ const page = () => {
                                 </p>
                             </div>
                         ) : chatReq.status === "accepted" ? (
-                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-center border border-white/5 rounded-xl bg-white/[0.01] min-h-[280px]">
-                                <MessageSquare size={36} className="text-indigo-400 animate-pulse" />
-                                <p className="text-sm font-semibold text-white">Chat coming soon</p>
-                                <p className="text-xs text-gray-500 max-w-[200px]">
-                                    Live chat consultation feature will be available in a future update.
-                                </p>
-                            </div>
+                            <QueryChatBox queryId={id as string} currentUserId={userInfo?._id || ""} />
                         ) : (
                             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
                                 <ShieldAlert size={28} className="text-red-400" />

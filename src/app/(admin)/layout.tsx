@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { BarChart2, ListChevronsDownUp, LogOut, Menu, User, UserCircle2, X, Sun, Moon } from "lucide-react";
+import { BarChart2, ListChevronsDownUp, LogOut, Menu, User, UserCircle2, X, Sun, Moon, MessageSquare } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
@@ -27,6 +27,7 @@ export default function DashboardLayout({
     const navLinks = [
         { href: "/admin-dashboard", label: "Dashboard", icon: BarChart2 },
         { href: "/view-clients-req", label: "Project Queries", icon: ListChevronsDownUp },
+        { href: "/admin/messages", label: "Messages", icon: MessageSquare },
         { href: "/admin-profile", label: "Profile", icon: User },
     ];
 
@@ -74,7 +75,7 @@ export default function DashboardLayout({
                 <nav className="flex flex-col px-3 py-4 gap-1 flex-1">
                     <p className="text-xs text-gray-600 uppercase tracking-widest font-semibold px-3 mb-2">Navigation</p>
                     {navLinks.map(({ href, label, icon: Icon }) => {
-                        const isActive = pathname === href;
+                        const isActive = pathname === href || pathname.startsWith(href + '/');
                         return (
                             <Link
                                 key={href}

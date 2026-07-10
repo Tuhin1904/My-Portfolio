@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FolderKanban, LogOut, Menu, PlusCircle, User, UserCircle2, X, Sun, Moon } from "lucide-react";
+import { FolderKanban, LogOut, Menu, PlusCircle, User, UserCircle2, X, Sun, Moon, MessageSquare } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
@@ -27,6 +27,7 @@ export default function DashboardLayout({
     const navLinks = [
         { href: "/my-project-requests", label: "My Enquiries", icon: FolderKanban },
         { href: "/create-project", label: "New Request", icon: PlusCircle },
+        { href: "/my/messages", label: "Messages", icon: MessageSquare },
         { href: "/my-profile", label: "My Profile", icon: User },
     ];
 

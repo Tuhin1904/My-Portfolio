@@ -65,7 +65,7 @@ const MyProjectRequests = () => {
                 </div>
                 <button
                     onClick={() => router.push('/create-project')}
-                    className="shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
+                    className="shimmer-btn text-white text-sm px-4 py-2 rounded-lg font-semibold flex items-center gap-2 cursor-pointer"
                 >
                     <PlusCircle size={15} />
                     New Request
