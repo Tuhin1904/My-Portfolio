@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BarChart2, ListChevronsDownUp, LogOut, Menu, User, UserCircle2, X, Sun, Moon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -31,7 +31,14 @@ export default function DashboardLayout({
     ];
 
     const { isAuthenticated } = useAuthChecker();
-    if (!isAuthenticated) return null;
+
+    useEffect(() => {
+        if (isAuthenticated && userInfo?.userRole === 2) {
+            router.push("/my-project-requests");
+        }
+    }, [isAuthenticated, userInfo, router]);
+
+    if (!isAuthenticated || userInfo?.userRole === 2) return null;
 
     return (
         <div className="flex min-h-screen bg-gray-950">
