@@ -106,7 +106,7 @@ const SignInForm = () => {
                 toast("Welcome!");
             } else {
                 const errorMsg = resultAction.payload as string;
-                if (errorMsg === "Please verify your email before signing in.") {
+                if (errorMsg && errorMsg.includes("Please verify your email")) {
                     toast.error(errorMsg);
                     setEmailForVerification(data.email);
                     setIsOtpStep(true);
@@ -524,7 +524,7 @@ const SignInForm = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            className={`w-full shimmer-btn text-white py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all ${loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
                             {loading ? <ButtonSpinner text="Signing in..." /> : "Sign In"}
                         </button>

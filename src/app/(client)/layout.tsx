@@ -42,13 +42,13 @@ export default function DashboardLayout({
     if (!isAuthenticated || userInfo?.userRole === 1) return null;
 
     return (
-        <div className="flex min-h-screen bg-gray-950">
+        <div className="flex h-screen overflow-hidden bg-gray-950">
 
             {/* ── Sidebar ── */}
             {/* ── Sidebar ── */}
             <aside
-                className={`fixed md:static top-0 left-0 z-50 h-full w-72 shrink-0 flex flex-col transform transition-transform duration-300
-                    ${open ? "translate-x-0" : "-translate-x-full min-h-screen"} md:translate-x-0 sidebar-bg`}
+                className={`fixed md:sticky top-0 left-0 z-50 h-screen w-72 shrink-0 flex flex-col transform transition-transform duration-300 overflow-y-auto
+                    ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 sidebar-bg`}
             >
                 {/* ── Brand — h-14 matches topbar exactly ── */}
                 <div className="h-14 flex items-center gap-3 px-5 shrink-0 sidebar-brand-border">
@@ -121,7 +121,7 @@ export default function DashboardLayout({
             )}
 
             {/* ── Main Content ── */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
 
                 {/* Topbar — h-14, same border as sidebar brand row */}
                 <header className="flex items-center justify-between px-5 h-14 shrink-0 relative z-30"
@@ -176,7 +176,7 @@ export default function DashboardLayout({
                 </header>
 
                 {/* Page Content */}
-                <main className="p-6 flex-1 overflow-auto">{children}</main>
+                <main className="p-6 flex-1 overflow-y-auto">{children}</main>
             </div>
         </div>
     );

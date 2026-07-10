@@ -30,4 +30,7 @@ export const apiEndpoints = {
   getConversationMessages: (conversationId: string, page: number) =>
     `/chat/conversations/${conversationId}/messages?page=${page}`,
   getChatHistory: (queryId: string) => `/project/queries/${queryId}/history`,
+
+  // Analytics
+  getDashboardAnalytics: "/dashboard/stats",
 };
