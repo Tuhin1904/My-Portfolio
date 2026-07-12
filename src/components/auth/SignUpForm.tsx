@@ -11,6 +11,7 @@ import { verifyOtpThunk } from '@/store/slices/AuthThunks';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import ButtonSpinner from '@/components/common/ButtonSpinner';
+import ScreenFreezer from '@/components/common/ScreenFreezer';
 
 type FormValues = {
     email: string;
@@ -79,11 +80,11 @@ const SignUpForm = () => {
             } else {
                 const errorMsg = resultAction.payload as string;
                 toast.error(errorMsg || "Verification failed");
+                setLoading(false);
             }
         } catch (err: any) {
             console.error("Verification error:", err);
             toast.error(err?.message || "Verification failed");
-        } finally {
             setLoading(false);
         }
     };
@@ -108,6 +109,7 @@ const SignUpForm = () => {
     if (isOtpStep) {
         return (
             <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 relative overflow-hidden">
+                {loading && <ScreenFreezer message="Verifying code..." />}
                 {/* Background blobs */}
                 <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />

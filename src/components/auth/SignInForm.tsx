@@ -3,6 +3,7 @@ import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
 import { requestForToken } from '@/lib/fcm';
 import ButtonSpinner from '@/components/common/ButtonSpinner';
+import ScreenFreezer from '@/components/common/ScreenFreezer';
 import { RootState, AppDispatch } from '@/store';
 import { loginUserThunk, verifyOtpThunk } from '@/store/slices/AuthThunks';
 import { Eye, EyeOff } from 'lucide-react';
@@ -113,10 +114,10 @@ const SignInForm = () => {
                 } else {
                     toast.error(errorMsg || "Incorrect Email or Password");
                 }
+                setLoading(false);
             }
         } catch (err: any) {
             toast.error(err?.message || "Incorrect Email or Password");
-        } finally {
             setLoading(false);
         }
     };
@@ -143,11 +144,11 @@ const SignInForm = () => {
             } else {
                 const errorMsg = resultAction.payload as string;
                 toast.error(errorMsg || "Verification failed");
+                setLoading(false);
             }
         } catch (err: any) {
             console.error("Verification error:", err);
             toast.error(err?.message || "Verification failed");
-        } finally {
             setLoading(false);
         }
     };
@@ -227,6 +228,7 @@ const SignInForm = () => {
     if (isOtpStep) {
         return (
             <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 relative overflow-hidden">
+                {loading && <ScreenFreezer message="Verifying code..." />}
                 {/* Background blobs */}
                 <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
@@ -430,6 +432,7 @@ const SignInForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 relative overflow-hidden">
+            {loading && <ScreenFreezer message="Signing you in..." />}
             {/* Background blobs */}
             <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-[-15%] right-[-10%] w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
