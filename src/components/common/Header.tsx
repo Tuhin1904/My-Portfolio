@@ -19,16 +19,16 @@ const Header = () => {
   const navLinks = [
     { title: 'Home', href: '/' },
     { title: 'Articles', href: '/articles' },
-    { title: 'URL Shortener', href: '/url-shortener' },
+    { title: 'Tools', href: '/tools' },
   ];
-
 
   const getToken = useSelector((state: RootState) => state.auth.accessToken);
   const isDark = useSelector((state: RootState) => state.theme?.isDark ?? true);
-  const allowedRoutes = navLinks.map(link => link.href);
+  const allowedRoutes = ['/', '/articles', '/tools', '/tools/url-shortener', '/url-shortener'];
 
   const shouldShowHeader =
     allowedRoutes.includes(pathname) || !getToken;
+
 
   const [isActionsExpanded, setIsActionsExpanded] = useState(false);
   const actionRef = useRef<HTMLDivElement>(null);

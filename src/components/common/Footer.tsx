@@ -52,14 +52,17 @@ const Footer = () => {
                             <a href="/articles" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Articles</a>
                         </li>
                         <li>
-                            <a href="/url-shortener" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">URL Shortener</a>
+                            <a href="/tools" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Tools Hub</a>
+                        </li>
+                        <li>
+                            <a href="/tools/url-shortener" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">URL Shortener</a>
                         </li>
                         <li>
                             <a href="/privacy-policy" className="text-gray-500 hover:text-indigo-400 transition-colors duration-200 text-sm">Privacy Policy</a>
                         </li>
-
                     </ul>
                 </div>
+
 
                 {/* Contact */}
                 <div>
