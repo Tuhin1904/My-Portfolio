@@ -19,7 +19,9 @@ const Header = () => {
   const navLinks = [
     { title: 'Home', href: '/' },
     { title: 'Articles', href: '/articles' },
+    { title: 'URL Shortener', href: '/url-shortener' },
   ];
+
 
   const getToken = useSelector((state: RootState) => state.auth.accessToken);
   const isDark = useSelector((state: RootState) => state.theme?.isDark ?? true);

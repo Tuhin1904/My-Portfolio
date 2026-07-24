@@ -33,4 +33,13 @@ export const apiEndpoints = {
 
   // Analytics
   getDashboardAnalytics: "/dashboard/stats",
+
+  // URL Shortener
+  createShortUrl: "/url-shortener",
+  getShortUrls: "/url-shortener",
+  getShortUrlById: (id: string) => `/url-shortener/${id}`,
+  updateShortUrl: (id: string) => `/url-shortener/${id}`,
+  deleteShortUrl: (id: string) => `/url-shortener/${id}`,
+  redirectShortUrl: (shortCode: string) => `/url-shortener/redirect/${shortCode}`,
 };
+
