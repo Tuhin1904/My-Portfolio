@@ -8,6 +8,8 @@ import StorePersistProvider from "@/providers/StorePersistProvider";
 
 const Footer = dynamic(() => import("@/components/common/Footer"));
 import ThemeSync from "@/components/common/ThemeSync";
+import SiteAnalyticsTracker from "@/components/common/SiteAnalyticsTracker";
+import GoogleAnalytics from "@/components/common/GoogleAnalytics";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 const montserrat = Montserrat({
@@ -34,8 +36,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={cn("font-sans", geist.variable)} data-theme="dark">
       <body className={montserrat.variable}>
+        <GoogleAnalytics />
         <StorePersistProvider>
           <ThemeSync />
+          <SiteAnalyticsTracker />
           <Header />
           <main>{children}</main>
           <Footer />

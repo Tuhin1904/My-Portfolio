@@ -33,6 +33,9 @@ export const apiEndpoints = {
 
   // Analytics
   getDashboardAnalytics: "/dashboard/stats",
+  trackAnalytics: "/analytics/track",
+  getAnalyticsSummary: "/analytics/summary",
+
 
   // URL Shortener
   createShortUrl: "/url-shortener",

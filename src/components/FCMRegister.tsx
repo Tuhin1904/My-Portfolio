@@ -19,7 +19,7 @@ export default function FCMRegister() {
       try {
         const fcmToken = await requestForToken();
         if (fcmToken) {
-          console.log("FCM Token retrieved successfully:", fcmToken);
+          // console.log("FCM Token retrieved successfully:", fcmToken);
           // Send to backend
           await apiRequest({
             method: "PUT",

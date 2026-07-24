@@ -17,10 +17,15 @@ import {
   Clock,
   CheckCircle2,
   X,
+  MapPin,
 } from 'lucide-react';
+
 import { toast } from 'sonner';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import { apiRequest } from '@/apiFiles/apiClient';
 import { apiEndpoints } from '@/apiFiles/apiEndpoints';
+
 
 interface ShortUrlItem {
   _id: string;
@@ -37,10 +42,18 @@ interface ShortUrlItem {
     referrer?: string;
     userAgent?: string;
     ip?: string;
+    location?: string;
+    country?: string;
+    city?: string;
   }>;
 }
 
+
 export default function UrlShortenerPage() {
+  const user = useSelector((state: RootState) => (state.auth as any)?.user || null);
+  const userRole = user?.userRole;
+  const userEmail = user?.email;
+
   const [originalUrl, setOriginalUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [title, setTitle] = useState('');
@@ -59,16 +72,65 @@ export default function UrlShortenerPage() {
   const [selectedLinkForStats, setSelectedLinkForStats] = useState<ShortUrlItem | null>(null);
   const [qrModalUrl, setQrModalUrl] = useState<string | null>(null);
 
+  const getLocalLinkIds = (): string[] => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = localStorage.getItem('my_short_link_ids');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const saveLocalLinkId = (id: string) => {
+    if (typeof window === 'undefined' || !id) return;
+    try {
+      const existing = getLocalLinkIds();
+      if (!existing.includes(id)) {
+        const updated = [id, ...existing];
+        localStorage.setItem('my_short_link_ids', JSON.stringify(updated));
+      }
+    } catch (e) {
+      console.error('Failed to save link ID to localStorage', e);
+    }
+  };
+
+  const removeLocalLinkId = (id: string) => {
+    if (typeof window === 'undefined' || !id) return;
+    try {
+      const existing = getLocalLinkIds();
+      const updated = existing.filter((item) => item !== id);
+      localStorage.setItem('my_short_link_ids', JSON.stringify(updated));
+    } catch (e) {
+      console.error('Failed to remove link ID from localStorage', e);
+    }
+  };
+
   const fetchShortLinks = useCallback(async () => {
     setIsLoadingLinks(true);
     try {
+      const localIds = getLocalLinkIds();
+      const queryParams: any = {
+        query: searchQuery,
+        pageSize: 50,
+      };
+
+      if (userRole === 1) {
+        // Admin (userRole == 1) views all short URLs
+      } else if (userEmail) {
+        // Registered User views URLs matching their email
+        queryParams.email = userEmail;
+      } else if (localIds.length > 0) {
+        // Guest user views URLs matching their localStorage session IDs
+        queryParams.ids = localIds.join(',');
+      } else {
+        queryParams.ids = 'none';
+      }
+
       const response = await apiRequest({
         method: 'GET',
         url: apiEndpoints.getShortUrls,
-        params: {
-          query: searchQuery,
-          pageSize: 20,
-        },
+        params: queryParams,
       });
 
       if (response && response.success && Array.isArray(response.data)) {
@@ -79,7 +141,7 @@ export default function UrlShortenerPage() {
     } finally {
       setIsLoadingLinks(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, userRole, userEmail]);
 
   useEffect(() => {
     fetchShortLinks();
@@ -108,11 +170,16 @@ export default function UrlShortenerPage() {
           customCode: customCode.trim() || undefined,
           title: title.trim() || undefined,
           expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+          email: userEmail || undefined,
         },
       });
 
+
       if (response && response.success && response.data) {
         setGeneratedLink(response.data);
+        if (response.data._id) {
+          saveLocalLinkId(response.data._id);
+        }
         toast.success('Short link created successfully!');
         setOriginalUrl('');
         setCustomCode('');
@@ -128,6 +195,7 @@ export default function UrlShortenerPage() {
       setIsSubmitting(false);
     }
   };
+
 
   const handleCopy = (urlStr: string, id: string) => {
     navigator.clipboard.writeText(urlStr);
@@ -146,8 +214,10 @@ export default function UrlShortenerPage() {
       });
 
       if (response && response.success) {
+        removeLocalLinkId(id);
         toast.success('Short URL deleted');
         setShortLinks((prev) => prev.filter((item) => item._id !== id));
+
         if (selectedLinkForStats?._id === id) {
           setSelectedLinkForStats(null);
         }
@@ -158,10 +228,10 @@ export default function UrlShortenerPage() {
   };
 
   const getFullShortUrl = (item: ShortUrlItem): string => {
-    if (item.shortUrl) return item.shortUrl;
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://tuhindev.me';
     return `${origin}/s/${item.shortCode}`;
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white flex flex-col transition-colors duration-200">
@@ -353,9 +423,10 @@ export default function UrlShortenerPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <BarChart2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Recent Short Links
+                <BarChart2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Your Created Short Links
               </h2>
-              <p className="text-xs text-gray-600 dark:text-gray-400">View and manage your created URLs, click statistics, and status.</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">View and manage your created URLs, click statistics, and status. (Private to your session)</p>
+
             </div>
 
             <div className="flex items-center gap-3">
@@ -546,14 +617,22 @@ export default function UrlShortenerPage() {
                     <div className="text-xs text-gray-500 text-center py-4">No click logs recorded yet.</div>
                   ) : (
                     selectedLinkForStats.analytics.slice().reverse().map((log, index) => (
-                      <div key={index} className="p-2.5 bg-gray-50 dark:bg-gray-950/60 rounded-lg text-xs border border-gray-200 dark:border-white/5 flex items-center justify-between">
-                        <div>
-                          <div className="text-gray-800 dark:text-gray-300 font-mono text-[11px]">{new Date(log.timestamp).toLocaleString()}</div>
+                      <div key={index} className="p-2.5 bg-gray-50 dark:bg-gray-950/60 rounded-lg text-xs border border-gray-200 dark:border-white/5 flex items-center justify-between gap-2">
+                        <div className="space-y-0.5">
+                          <div className="text-gray-800 dark:text-gray-300 font-mono text-[11px] flex items-center gap-1.5">
+                            <span>{new Date(log.timestamp).toLocaleString()}</span>
+                            {log.location && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-[10px] font-semibold">
+                                <MapPin className="w-3 h-3" /> {log.location}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-gray-500 text-[10px] truncate max-w-xs">{log.referrer || 'Direct / Bookmark'}</div>
                         </div>
-                        <div className="text-gray-500 dark:text-gray-400 text-[10px]">{log.ip || 'N/A'}</div>
+                        <div className="text-gray-500 dark:text-gray-400 text-[10px] font-mono shrink-0">{log.ip || 'N/A'}</div>
                       </div>
                     ))
+
                   )}
                 </div>
               </motion.div>
